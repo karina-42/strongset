@@ -46,3 +46,26 @@ export type DraftEntryInput = {
   restSec: number;
   note?: string;
 }
+
+export type AppMode = "gym" | "video";
+
+export type VideoTab = "add" | "list" | "search" | "edit";
+
+export type VideoWorkout = {
+  id: string;
+  title: string;
+  url: string;
+  thumbnailUrl?: string;
+  tags: string[];
+  note?: string;
+  area: "upper" | "lower" | "full";
+}
+
+export type DraftVideoWorkout = {
+  title: string;
+  url: string;
+  thumbnailUrl?: string;
+  tags: string[];
+  note?: string;
+  area: "upper" | "lower" | "full";
+}

@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'development') {
   if (!global._mongoClientPromise) {
     client = new MongoClient(uri)
     // @ts-expect-error: I dont know2
-    globalThis._mongoClientPromise = client.connect()
+    global._mongoClientPromise = client.connect()
   }
   // @ts-expect-error: I dont know3
   clientPromise = globalThis._mongoClientPromise

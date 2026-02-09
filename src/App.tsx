@@ -15,6 +15,8 @@ import { calculateMonthlyStats } from './utils/monthlyStats'
 import { VideoForm } from './components/VideoForm'
 import './App.css'
 
+const STORAGE_KEY = "strongset-today-entries"
+
 // Default entries for the input form
 const defaultInput:DraftEntryInput = {
   exerciseName: "",
@@ -42,7 +44,15 @@ const defaultVideoForm: DraftVideoWorkout = {
 function App() {
   // States
   const [workoutHistory, setWorkoutHistory] = useState<WorkoutEntry[]>([]);
-  const [todayEntries, setTodayEntries] = useState<WorkoutEntry[]>([]);
+  const [todayEntries, setTodayEntries] = useState<WorkoutEntry[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (!saved) return []
+
+    return JSON.parse(saved).map((e: WorkoutEntry) => ({
+      ...e,
+      dateDone: new Date(e.dateDone)
+    }))
+  });
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [draftInput, setDraftInput] = useState<DraftEntryInput>(defaultInput);
   const [videoWorkouts, setVideoWorkouts] = useState<VideoWorkout[]>([]);
@@ -171,6 +181,7 @@ function App() {
 
     setWorkoutHistory(prev => [...prev, ...todayEntries])
     setTodayEntries([])
+    localStorage.removeItem(STORAGE_KEY) //clear after saving
   }
 
   // Function to create a draft Exercise with default 
@@ -277,6 +288,11 @@ function App() {
       cancelled = true
     }
   }, [url, title])
+
+  //save to localStorage whenever todayEntries changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(todayEntries))
+  }, [todayEntries])
 
   // todayEntriesList display helper
   const todayEntriesForDisplay: TodayEntryDisplay[] = todayEntries.map(entry => {

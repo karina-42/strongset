@@ -1,3 +1,11 @@
+export type Workout = {
+  id: string
+  date: Date
+  entries: WorkoutEntry[]
+  note?: string
+  createdAt: Date
+}
+
 // Model for an exercise to store
 // name of the exercise, its id, and what body part 
 // it works 
@@ -27,6 +35,7 @@ export interface WorkoutEntry {
   restSec: number;
   note?: string;
   dateDone: Date;
+  area: "upper" | "lower" | "full";
 }
 
 // Display type to display the name of the exercise in 
@@ -58,4 +67,5 @@ export type DraftVideoWorkout = {
   tags: string[];
   note?: string;
   area: "upper" | "lower" | "full";
+  repeatFlag: "do-again" | "neutral" | "dont-do-again";
 }

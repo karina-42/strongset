@@ -14,7 +14,7 @@ export function ExerciseList({
       {/* iterate through exercise database and display */}
       {exercises.map((exercise) => (
         <li key = {exercise.id}>
-          <div onClick={() => onSelectExercise(exercise)}>{exercise.name}</div>{" "} ({exercise.area})
+          <div onClick={() => onSelectExercise(exercise)}>{exercise.name}</div>
         </li>
       ))}
     </ul>

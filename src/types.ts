@@ -56,7 +56,7 @@ export type DraftEntryInput = {
   note?: string;
 }
 
-export type AppMode = "gym" | "video";
+export type AppMode = "gym" | "video" | "history";
 
 export type VideoTab = "add" | "list" | "search" | "edit";
 

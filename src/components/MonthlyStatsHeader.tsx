@@ -17,7 +17,7 @@ export function MonthlyStatsHeader({
     <header>
       <h2>{visitCount >= 1 
         ? `This month: ${visitCount} visits, ￥${costPerVisit} per visit` 
-        : `No visits this month, you paid ${monthlyFee} for nothing...`}</h2>
+        : `No visits this month, you paid ￥${monthlyFee} for nothing...`}</h2>
     </header>
   )
 }

@@ -15,66 +15,6 @@ import { calculateMonthlyStats } from './utils/monthlyStats'
 import { VideoForm } from './components/VideoForm'
 import './App.css'
 
-// LOCAL STORAGE
-const HISTORY_STORAGE_KEY = "workoutHistory"
-const EXERCISES_STORAGE_KEY = "exercises"
-const VIDEO_STORAGE_KEY = "videoWorkouts"
-
-// Load and save  workout history
-function loadWorkoutHistory(): WorkoutEntry[] {
-  const raw = localStorage.getItem(HISTORY_STORAGE_KEY)
-  if (!raw) return []
-
-  try {
-    const parsed = JSON.parse(raw)
-    return parsed.map((entry: { dateDone: string | number | Date }) => ({
-      ...entry,
-      dateDone: new Date(entry.dateDone),
-    }))
-  } catch {
-    return []
-  }
-}
-
-function saveWorkoutHistory(history: WorkoutEntry[]) {
-  localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history))
-}
-
-// Load and save exercises
-function loadExercises(): Exercise[] {
- const raw = localStorage.getItem(EXERCISES_STORAGE_KEY)
- if (!raw) return []
-
- try {
-  const parsed = JSON.parse(raw)
-  return parsed
- }
- catch {
-  return []
- }
-}
-
-function saveExercises(exercise: Exercise[]) {
-  localStorage.setItem(EXERCISES_STORAGE_KEY, JSON.stringify(exercise))
-}
-
-// Load and save youtube workout data
-function loadVideoWorkouts(): VideoWorkout[] {
-  const raw = localStorage.getItem(VIDEO_STORAGE_KEY)
-  if (!raw) return []
-
-  try {
-    const parsed = JSON.parse(raw)
-    return parsed
-  } catch {
-    return []
-  }
-}
-
-function saveVideoWorkouts(videos: VideoWorkout[]) {
-  localStorage.setItem(VIDEO_STORAGE_KEY, JSON.stringify(videos))
-}
-
 // Default entries for the input form
 const defaultInput:DraftEntryInput = {
   exerciseName: "",
@@ -95,16 +35,17 @@ const defaultVideoForm: DraftVideoWorkout = {
   tags: [],
   note: "",
   area: "full",
+  repeatFlag: "neutral",
 }
 
 // The APP
 function App() {
   // States
-  const [workoutHistory, setWorkoutHistory] = useState<WorkoutEntry[]>(loadWorkoutHistory);
+  const [workoutHistory, setWorkoutHistory] = useState<WorkoutEntry[]>([]);
   const [todayEntries, setTodayEntries] = useState<WorkoutEntry[]>([]);
-  const [exercises, setExercises] = useState<Exercise[]>(loadExercises);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
   const [draftInput, setDraftInput] = useState<DraftEntryInput>(defaultInput);
-  const [videoWorkouts, setVideoWorkouts] = useState<VideoWorkout[]>(loadVideoWorkouts);
+  const [videoWorkouts, setVideoWorkouts] = useState<VideoWorkout[]>([]);
   const [draftVideoWorkout, setDraftVideoWorkout] = useState<DraftVideoWorkout>(defaultVideoForm);
   const [mode, setMode] = useState<AppMode>("gym");
   const [videoTab, setVideoTab] = useState<VideoTab>("list");
@@ -127,7 +68,7 @@ function App() {
   const monthlyStats = calculateMonthlyStats(workoutHistory, monthlyFee) 
 
   // Function to convert a draft entry input to a workout entry
-  function handleSubmitDraft(input: DraftEntryInput) {
+  async function handleSubmitDraft(input: DraftEntryInput) {
     // return if no name is inputed
     if (!input.exerciseName.trim()) return
 
@@ -147,6 +88,12 @@ function App() {
         area: input.area
       }
 
+      await fetch("http://localhost:4000/exercises", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newExercise),
+      })
+
       setExercises(prev => [...prev, newExercise])
       exercise = newExercise
     }
@@ -162,7 +109,8 @@ function App() {
       restMin: input.restMin,
       restSec: input.restSec,
       note: input.note,
-      dateDone: new Date()
+      dateDone: new Date(),
+      area: exercise.area
     }
 
     // add it to day's entries
@@ -175,42 +123,53 @@ function App() {
     }))
   }
 
-      // Function to handle submitting a workout video form to save
-  function handleSubmitWorkoutVideo(input: DraftVideoWorkout) {
+    // Function to handle submitting a workout video form to save
+  async function handleSubmitWorkoutVideo(input: DraftVideoWorkout) {
     if (!input.url.trim()) return
     
-    let video = videoWorkouts.find(
-    e => e.url === input.url
-    )
-
-    // if no exercise is saved, create a new one
-    if (!video) {
-      const newVideo: VideoWorkout = {
-        id: crypto.randomUUID(),
-        title: input.title,
-        url: input.url,
-        thumbnailUrl: input.thumbnailUrl,
-        tags: input.tags,
-        note: input.note,
-        area: input.area,
-      }
-
-      setVideoWorkouts(prev => [...prev, newVideo])
-      video = newVideo
+    const newVideo: VideoWorkout = {
+      id: crypto.randomUUID(),
+      title: input.title,
+      url: input.url,
+      thumbnailUrl: input.thumbnailUrl,
+      tags: input.tags,
+      note: input.note,
+      area: input.area,
+      repeatFlag: input.repeatFlag,
+      createdAt: new Date()
     }
+
+     
+    await fetch("http://localhost:4000/videos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newVideo),
+    })
+
+    setVideoWorkouts(prev => [...prev, newVideo])
 
     // reset the form
     setDraftVideoWorkout( prev => ({
       ...defaultVideoForm,
       area: prev.area,
     }))
-
   }
 
-  function finishWorkout() {
+  async function finishWorkout() {
     if (todayEntries.length === 0) return
 
-    setWorkoutHistory(workoutHistory => [...workoutHistory, ...todayEntries])
+    // send all to backend
+    await Promise.all(
+      todayEntries.map(entry =>
+        fetch("http://localhost:4000/workouts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(entry),
+        })
+      )
+    )
+
+    setWorkoutHistory(prev => [...prev, ...todayEntries])
     setTodayEntries([])
   }
 
@@ -268,18 +227,32 @@ function App() {
   }
 
   useEffect(() => {
-    saveWorkoutHistory(workoutHistory)
-  }, [workoutHistory])
-
-  useEffect(() => {
-    saveExercises(exercises)
-  }, [exercises])
-
-  useEffect(() => {
-    saveVideoWorkouts(videoWorkouts)
-  }, [videoWorkouts])
+    fetch("http://localhost:4000/workouts")
+    .then(r => r.json())
+    .then((data: WorkoutEntry[]) =>
+      setWorkoutHistory(
+        data.map(e => ({
+          ...e,
+          dateDone: new Date(e.dateDone),
+        }))
+      )
+    )
+  }, [])
 
   const { url, title } = draftVideoWorkout
+
+  useEffect(() => {
+    fetch("http://localhost:4000/videos")
+    .then(res => res.json())
+    .then(data => setVideoWorkouts(data))
+    .catch(console.error)
+  }, [])
+
+  useEffect(() => {
+    fetch("http://localhost:4000/exercises")
+    .then(r => r.json())
+    .then(setExercises)
+  }, [])
 
   useEffect(() => {
     if (!url.trim()) return
@@ -439,17 +412,4 @@ function App() {
   )
 }
 
- //todo 
- // feature for saving Youtube videos with tags and notes
-
-// Key needs:
-
-// URL (YouTube link)
-
-// Free-text notes (why you liked/disliked it)
-
-//  tags/keywords (“mobility”, “wrists”, “low impact”)
-
-// Used outside the normal “exercise → sets/reps” flow
-// also saves and shows on claendar that will be added later
 export default App

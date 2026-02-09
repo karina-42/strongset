@@ -18,7 +18,7 @@ export function DraftEntryForm({
       <h1>Selected Exercise</h1>
 
       {/* Display name and date last done*/}
-      <p>{value.exerciseName}, {lastDoneDate ? ( <span>last done {lastDoneDate.toLocaleString()} </span>) : (<span>first time</span>)}</p>
+      <p>{value.exerciseName}, {lastDoneDate ? ( <span>last done {lastDoneDate.toLocaleDateString(undefined, {month: "short", day: "numeric", year: 'numeric'})} </span>) : (<span>first time</span>)}</p>
 
       {/* Input exercise name */}
       <div className="space-y-2">

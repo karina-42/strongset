@@ -423,20 +423,26 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
           {/* Display grouped by exercise */}
           <div className='space-y-4'>
             {Object.entries(historyByExercise)
+              .map(([exerciseName, entries]) => {
+                //sort entries first
+              const sortedEntries = entries.sort((a, b) => b.dateDone.getTime() - a.dateDone.getTime())
+              return [exerciseName, sortedEntries] as [string, WorkoutEntry[]]
+              })
+              //sort exercises by most recent entry
             .sort(([, a], [, b]) => b[0].dateDone.getTime() - a[0].dateDone.getTime())
-            .map(([exerciseName, entries]) => (
+            .map(([exerciseName, sortedEntries]) => (
               <div key={exerciseName} className='border p-3 rounded'>
                 <h2 className='font-bold text-lg'>{exerciseName}</h2>
                 <p className='text-sm text-gray-600'>
-                  Last done: {entries[0].dateDone.toLocaleDateString()}
+                  Last done: {sortedEntries[0].dateDone.toLocaleDateString()}
                 </p>
                 <p className='text-sm text-gray-600'>
-                  Total sessions: {entries.length}
+                  Total sessions: {sortedEntries.length}
                 </p>
 
                 {/* Show last 3 sessions */}
                 <div className='mt-2 space-y-1'>
-                  {entries.slice(0, 3).map(entry => (
+                  {sortedEntries.slice(0, 3).map(entry => (
                     <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded'>
                       <span>{entry.dateDone.toLocaleDateString()}: </span>
                       {entry.weight && <span>{entry.weight}kg x {entry.numOfWeights} </span>}
@@ -446,10 +452,12 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
                   ))}
                 </div>
               </div>
-            ))}
-          </div>
+            ))
+          }
         </div>
-      )}
+      </div>
+      )
+    }
 
       {/* Video tab */}
       {mode === "video" && (

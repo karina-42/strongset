@@ -16,7 +16,7 @@ import { VideoForm } from './components/VideoForm'
 import './App.css'
 
 const STORAGE_KEY = "strongset-today-entries"
-const API_URL = import.meta.env.VITE_API_url || "http://localhost:4000"
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000"
 
 // Default entries for the input form
 const defaultInput:DraftEntryInput = {

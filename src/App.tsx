@@ -16,6 +16,7 @@ import { VideoForm } from './components/VideoForm'
 import './App.css'
 
 const STORAGE_KEY = "strongset-today-entries"
+const API_URL = import.meta.env.VITE_API_url || "http://localhost:4000"
 
 // Default entries for the input form
 const defaultInput:DraftEntryInput = {
@@ -99,7 +100,7 @@ function App() {
         area: input.area
       }
 
-      await fetch("http://localhost:4000/exercises", {
+      await fetch(`${API_URL}/exercises`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newExercise),
@@ -151,7 +152,7 @@ function App() {
     }
 
      
-    await fetch("http://localhost:4000/videos", {
+    await fetch(`${API_URL}/videos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newVideo),
@@ -172,7 +173,7 @@ function App() {
     // send all to backend
     await Promise.all(
       todayEntries.map(entry =>
-        fetch("http://localhost:4000/workouts", {
+        fetch(`${API_URL}/workouts`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(entry),
@@ -256,7 +257,7 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
 }, {} as Record<string, WorkoutEntry[]>)
 
   useEffect(() => {
-    fetch("http://localhost:4000/workouts")
+    fetch(`${API_URL}/workouts`)
     .then(r => r.json())
     .then((data: WorkoutEntry[]) =>
       setWorkoutHistory(
@@ -271,14 +272,14 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
   const { url, title } = draftVideoWorkout
 
   useEffect(() => {
-    fetch("http://localhost:4000/videos")
+    fetch(`${API_URL}/videos`)
     .then(res => res.json())
     .then(data => setVideoWorkouts(data))
     .catch(console.error)
   }, [])
 
   useEffect(() => {
-    fetch("http://localhost:4000/exercises")
+    fetch(`${API_URL}/exercises`)
     .then(r => r.json())
     .then(setExercises)
   }, [])

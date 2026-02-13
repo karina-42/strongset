@@ -382,7 +382,7 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
             <h1>Today's Entries</h1>
             <TodayEntriesList entries={todayEntriesForDisplay} />
     <br></br>
-            <button onClick={finishWorkout}>Finish Workout</button>
+            <button className='px-4 py-2 rounded bg-red-500 text-white' onClick={finishWorkout}>Finish Workout</button>
           </div>
         </>
       )}

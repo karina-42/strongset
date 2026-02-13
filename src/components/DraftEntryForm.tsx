@@ -173,7 +173,7 @@ export function DraftEntryForm({
       {/* Click and save the draft into today's entries */}
       <button onClick={onSubmit} className="
       w-full
-      bg-blue-600
+      bg-orange-500
       text-white
       py-3
       rounded-xl

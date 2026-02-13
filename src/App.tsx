@@ -325,7 +325,7 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
 
 /***************************************************/
 /***************************************************/
-  // THE IU
+  // THE UI
   return (
     <>
       {/* Handle switching modes */}

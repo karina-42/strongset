@@ -10,11 +10,11 @@ export function ExerciseList({
   onSelectExercise,
 }: ExerciseListProps) {
   return (
-    <ul>
+    <ul className="space-y-2">
       {/* iterate through exercise database and display */}
       {exercises.map((exercise) => (
         <li key = {exercise.id}>
-          <div onClick={() => onSelectExercise(exercise)}>{exercise.name}</div>
+          <div className="p-2 capitalize rounded transition active:bg-orange-50" onClick={() => onSelectExercise(exercise)}>{exercise.name}</div>
         </li>
       ))}
     </ul>

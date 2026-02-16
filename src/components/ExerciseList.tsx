@@ -14,7 +14,7 @@ export function ExerciseList({
       {/* iterate through exercise database and display */}
       {exercises.map((exercise) => (
         <li key = {exercise.id}>
-          <div className="p-2 capitalize rounded transition active:bg-orange-50" onClick={() => onSelectExercise(exercise)}>{exercise.name}</div>
+          <div className="p-2 bg-gray-50 capitalize rounded transition active:bg-purple-100 active:text-purple-700 cursor-pointer" onClick={() => onSelectExercise(exercise)}>{exercise.name}</div>
         </li>
       ))}
     </ul>

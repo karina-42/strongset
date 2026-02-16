@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-//import strongsetLogo from './assets/StrongSet_Logo.png'
+import strongsetLogo from './assets/StrongSet_Logo.png'
 import type { Exercise, WorkoutEntry } from './types'
 import type { TodayEntryDisplay } from './types'
 import type { DraftEntryInput } from './types'
@@ -328,37 +328,41 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
   // THE UI
   return (
     <>
+      {/* header */}
+            {/* logo */}
+      <div className='flex items-center justify-between px-3 py-3'>
+        <img src={strongsetLogo} className="h-10" alt="StrongSet"></img>
+        {mode === 'gym' && (
+          <div className='text-sm text-right'>
+            {/* cost header */}
+            <MonthlyStatsHeader
+              monthlyFee={monthlyFee}
+              monthlyStats={monthlyStats}
+              ></MonthlyStatsHeader>
+          </div>
+        )}
+      </div>
       {/* Handle switching modes */}
-      <div className='px-3 gap-2 mb-4'>
-        <button className={`px-3 py-2 rounded ${
-          mode === "gym" ? "bg-blue-600 text-white" : "bg-gray-200"
+      <div className='flex gap-1 p-2 bg-gray-100 rounded-lg mb-4 mx-3'>
+        <button className={`flex-1 py-2 rounded-md transition-colors ${
+          mode === "gym" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
         }`} onClick={() => setMode("gym")}>
           Gym
         </button>
-        <button className={`px-3 py-2 rounded ${
-          mode === "history" ? "bg-blue-600 text-white" : "bg-gray-200"
+        <button className={`flex-1 py-2 rounded-md transition-colors ${
+          mode === "history" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
         }`} onClick={() => setMode("history")}>
           History
         </button>
-        <button className={`px-3 py-2 rounded ${
-          mode === "video" ? "bg-blue-600 text-white" : "bg-gray-200"
+        <button className={`flex-1 py-2 rounded-md transition-colors ${
+          mode === "video" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
         }`} onClick={() => setMode("video")}>
           Video
         </button>
       </div>
 
-      {/* header */}
-      {/* <div>
-        <img src={strongsetLogo} className="logo strongset" alt="StrongSet logo"></img>
-      </div> */}
       {mode === "gym" && (
         <>
-          {/* cost header */}
-          <MonthlyStatsHeader
-            monthlyFee={monthlyFee}
-            monthlyStats={monthlyStats}
-          />
-
           {/* exercise browser, button filters and list */}
           <ExerciseBrowser
             exercises={exercises}

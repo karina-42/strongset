@@ -104,11 +104,11 @@ export function DraftEntryForm({
       {/* Note */}
       <div>
         <label className="text-sm text-gray-600">Notes:</label>
-        <input 
-          className="w-full border rounded-lg p-2"
-          type="text" 
+        <textarea 
+          className="w-full border rounded-lg p-2 min-h-[80px]"
           value={value.note}
           placeholder='enter note'
+          rows={3}
           onChange={(e) =>
             onChange({
               ...value,

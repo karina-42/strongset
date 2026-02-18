@@ -76,7 +76,7 @@ function App() {
     })()
 
   // To see how much each visit is costing
-  const monthlyFee = 8580;
+  const monthlyFee = 8965;
   const monthlyStats = calculateMonthlyStats(workoutHistory, monthlyFee) 
 
   // Function to convert a draft entry input to a workout entry

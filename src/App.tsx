@@ -323,6 +323,11 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
     }
   })
 
+
+  // handle deleting an entry from Today's Entries
+  const handleDeleteEntry = (entryId: string) => {
+    setTodayEntries(prev => prev.filter(entry => entry.id !== entryId))
+  }
 /***************************************************/
 /***************************************************/
   // THE UI
@@ -385,7 +390,10 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
           <div>
             {/* Display a list of today's logged exercises */}
             <h1>Today's Entries</h1>
-            <TodayEntriesList entries={todayEntriesForDisplay} />
+            <TodayEntriesList 
+              entries={todayEntriesForDisplay} 
+              onDelete={handleDeleteEntry}
+            />
     <br></br>
             <button className='px-4 py-2 rounded bg-red-500 text-white' onClick={finishWorkout}>Finish Workout</button>
           </div>

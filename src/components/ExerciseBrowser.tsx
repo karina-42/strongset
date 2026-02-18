@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Exercise } from "../types";
+import type { Exercise, WorkoutEntry } from "../types";
 import { ExerciseList } from "./ExerciseList";
 // diplays buttons, and list of filtered exercies
 // needs exercise list
@@ -7,6 +7,7 @@ import { ExerciseList } from "./ExerciseList";
 
 interface ExerciseBrowserProps {
   exercises: Exercise[];
+  workoutHistory: WorkoutEntry[];
   onSelectExercise: (exercise: Exercise) => void;
 }
 
@@ -16,6 +17,7 @@ type Filter = "all" | "upper" | "lower" | "full"
 
 export function ExerciseBrowser({
   exercises, 
+  workoutHistory,
   onSelectExercise
 }:  ExerciseBrowserProps) {
   const [filter, setFilter] = useState<Filter>("all")
@@ -42,6 +44,7 @@ export function ExerciseBrowser({
       {/* Display  list of exercises */}
       <ExerciseList
       exercises={filteredExercises}
+      workoutHistory={workoutHistory}
       onSelectExercise={onSelectExercise}
       />
     </div>

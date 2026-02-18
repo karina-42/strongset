@@ -366,6 +366,7 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
           {/* exercise browser, button filters and list */}
           <ExerciseBrowser
             exercises={exercises}
+            workoutHistory={workoutHistory}
             onSelectExercise={handleSelectedExercise}
           />
 <br></br>

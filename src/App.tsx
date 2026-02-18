@@ -61,6 +61,7 @@ function App() {
   const [mode, setMode] = useState<AppMode>("gym");
   const [videoTab, setVideoTab] = useState<VideoTab>("list");
   const [historyArea, setHistoryArea] = useState<Exercise['area'] | 'all'>('all')
+  const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
 
   // To display the last done date
   const lastDoneDate = (() => {
@@ -110,6 +111,18 @@ function App() {
       exercise = newExercise
     }
 
+    //check if editing or adding new
+if (editingEntryId) {
+  //UPDATE existing entry
+  setTodayEntries(prev =>
+    prev.map(entry =>
+      entry.id === editingEntryId
+      ? {...entry, ...input, exerciseId: exercise!.id, area: exercise!.area}
+      : entry
+    )
+  )
+  setEditingEntryId(null) // Exit edit mode
+} else {
     // Create that day's workout entry
     const newEntry: WorkoutEntry = {
       id: crypto.randomUUID(),
@@ -124,9 +137,9 @@ function App() {
       dateDone: new Date(),
       area: exercise.area
     }
-
     // add it to day's entries
     setTodayEntries(prev => [...prev, newEntry])
+}
 
     // reset the form
     setDraftInput( prev => ({
@@ -165,6 +178,28 @@ function App() {
       ...defaultVideoForm,
       area: prev.area,
     }))
+  }
+
+  // for fetching metadata
+  async function fetchYoutubeMetadata(
+  url: string
+  ): Promise<{ title: string; thumbnailUrl: string }> {
+    const endpoint = 
+      "https://www.youtube.com/oembed?format=json&url=" +
+      encodeURIComponent(url)
+
+    const res = await fetch(endpoint)
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch YouTube metadata")
+    }
+
+    const data = await res.json()
+    
+    return {
+      title: data.title,
+      thumbnailUrl: data.thumbnail_url,
+    }
   }
 
   async function finishWorkout() {
@@ -217,26 +252,27 @@ function App() {
     })
   }
 
-// for fetching metadata
-  async function fetchYoutubeMetadata(
-  url: string
-): Promise<{ title: string; thumbnailUrl: string }> {
-    const endpoint = 
-      "https://www.youtube.com/oembed?format=json&url=" +
-      encodeURIComponent(url)
+  // function for setting editingEntryId and load data into draft Input
+  function handleEditEntry(editId: string) {
+    const entryToEdit = todayEntries.find(entry => entry.id === editId)
+    if (!entryToEdit) return
 
-    const res = await fetch(endpoint)
+    const exercise = exercises.find(ex => ex.id === entryToEdit.exerciseId)
+    if (!exercise) return 
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch YouTube metadata")
-    }
+    setEditingEntryId(editId)
 
-    const data = await res.json()
-    
-    return {
-      title: data.title,
-      thumbnailUrl: data.thumbnail_url,
-    }
+    setDraftInput({
+      exerciseName: exercise.name,
+      area: entryToEdit.area,
+      weight: entryToEdit.weight,
+      numOfWeights: entryToEdit.numOfWeights,
+      reps: entryToEdit.reps,
+      sets: entryToEdit.sets,
+      restMin: entryToEdit.restMin,
+      restSec: entryToEdit.restSec,
+      note: entryToEdit.note,
+    })
   }
 
   //filter history by area
@@ -323,11 +359,11 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
     }
   })
 
-
   // handle deleting an entry from Today's Entries
   const handleDeleteEntry = (entryId: string) => {
     setTodayEntries(prev => prev.filter(entry => entry.id !== entryId))
   }
+
 /***************************************************/
 /***************************************************/
   // THE UI
@@ -381,6 +417,7 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
           <DraftEntryForm
             value={draftInput}
             lastDoneDate={lastDoneDate}
+            isEditing = {editingEntryId !== null}
             onChange={setDraftInput}
             onSubmit={() => {
               handleSubmitDraft(draftInput)
@@ -391,7 +428,8 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
             {/* Display a list of today's logged exercises */}
             <h1>Today's Entries</h1>
             <TodayEntriesList 
-              entries={todayEntriesForDisplay} 
+              entries={todayEntriesForDisplay}
+              onEdit = {handleEditEntry} 
               onDelete={handleDeleteEntry}
             />
     <br></br>

@@ -2,7 +2,8 @@ import type { DraftEntryInput } from "../types"
 
 type DraftEntryFormProps = {
   value: DraftEntryInput;
-  lastDoneDate: Date | null
+  lastDoneDate: Date | null;
+  isEditing: boolean;
   onChange: (value: DraftEntryInput) => void;
   onSubmit: () => void;
 }
@@ -10,6 +11,7 @@ type DraftEntryFormProps = {
 export function DraftEntryForm({
   value,
   lastDoneDate,
+  isEditing,
   onChange,
   onSubmit,
 }: DraftEntryFormProps) {
@@ -171,15 +173,16 @@ export function DraftEntryForm({
       </fieldset>
         
       {/* Click and save the draft into today's entries */}
-      <button onClick={onSubmit} className="
-      w-full
-      bg-orange-500
-      text-white
-      py-3
-      rounded-xl
-      font-semibold
-      active:scale-95
-      ">Add Entry</button>
+      <button onClick={onSubmit} className={`
+        w-full
+        ${isEditing ? 'bg-orange-500' : 'bg-emerald-500'}
+        text-white
+        py-3
+        rounded-xl
+        font-semibold
+        active:scale-95
+        `}>{isEditing ? "Update Entry" : "Add Entry"}
+      </button>
     </div>
   )
 }

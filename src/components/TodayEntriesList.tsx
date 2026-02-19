@@ -8,7 +8,7 @@ type TodayEntriesListProps = {
 
 export function TodayEntriesList({entries, onEdit, onDelete}: TodayEntriesListProps) {
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
+    <div className="bg-gray-100 rounded-xl p-4 shadow-sm space-y-4">
       <h2 className="text-xl font-bold text-gray-800">Today's Entries</h2>
       {entries.length === 0 ? (
         <p className="text-gray-400 text-center py-8">No entries yet. Add your first exercise!</p>

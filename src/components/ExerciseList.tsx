@@ -28,8 +28,8 @@ export function ExerciseList({
                 <span className="font-medium">{exercise.name}</span>
                 {lastWorkout && (
                   <span className="text-sm text-gray-600 ml-2">
-                    {lastWorkout.weight && `${lastWorkout.weight}kg x ${lastWorkout.numOfWeights} + `}
-                    {lastWorkout.sets} X {lastWorkout.reps}
+                    {lastWorkout.weight && `${lastWorkout.weight}kg x ${lastWorkout.numOfWeights} / `}
+                    {lastWorkout.reps} X {lastWorkout.sets}
                   </span>
                 )}
             </div>

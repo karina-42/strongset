@@ -413,28 +413,29 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
             workoutHistory={workoutHistory}
             onSelectExercise={handleSelectedExercise}
           />
-<br></br>
+          <div className='mt-6'>
+          {/* Form to edit data of selected exercise to input today */}
+            <DraftEntryForm
+              value={draftInput}
+              lastDoneDate={lastDoneDate}
+              isEditing = {editingEntryId !== null}
+              onChange={setDraftInput}
+              onSubmit={() => {
+                handleSubmitDraft(draftInput)
+              }}
+            /></div>
 
-          {/* Form to edit data of selected exercise to input 
-          today */}
-          <DraftEntryForm
-            value={draftInput}
-            lastDoneDate={lastDoneDate}
-            isEditing = {editingEntryId !== null}
-            onChange={setDraftInput}
-            onSubmit={() => {
-              handleSubmitDraft(draftInput)
-            }}
-          />
-
-          <div>
-            {/* Display a list of today's logged exercises */}
+          <div className='mt-6'>
+          {/* Display a list of today's logged exercises */}
             <TodayEntriesList 
               entries={todayEntriesForDisplay}
               onEdit = {handleEditEntry} 
               onDelete={handleDeleteEntry}
             />
-    <br></br>
+          </div>
+          
+          {/* Finish workout button */}
+          <div className='mt-6'>
             <button className='px-4 py-2 rounded bg-red-500 text-white' onClick={finishWorkout}>Finish Workout</button>
           </div>
         </>

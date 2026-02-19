@@ -23,7 +23,10 @@ export function TodayEntriesList({entries, onEdit, onDelete}: TodayEntriesListPr
                 </div>
                 <button
                   className="px-3 py-1 bg-purple-500 text-white text-sm rounded-lg active:bg-purple-600"
-                  onClick={() => onEdit(entry.id)}
+                  onClick={() => {
+                    onEdit(entry.id)
+                    document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})
+                  }}
                   >
                     Edit
                   </button>

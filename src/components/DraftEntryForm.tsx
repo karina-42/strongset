@@ -17,7 +17,15 @@ export function DraftEntryForm({
 }: DraftEntryFormProps) {
   return (
     <div className="bg-gray-100 rounded-xl p-4 shadow-sm space-y-4" id="exercise-form">
-      <h2 className="text-3xl font-bold text-emerald-700">Selected Exercise</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-bold text-emerald-700">Selected Exercise</h2>
+        <button
+          className="px-4 py-2 bg-emerald-500 text-white rounded active:bg-emerald-600 text-sm"
+          onClick={() => document.getElementById('exercise-browser')?.scrollIntoView({ behavior: 'smooth'})}
+        >
+          ↑ Select
+        </button>
+      </div>
 
       {/* Display name and date last done*/}
       <p className="text-sm text-gray-600">
@@ -45,12 +53,12 @@ export function DraftEntryForm({
       </div>
       
       {/* weight in kg and number of weights*/}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2">
         <div className="space-y-2">
           <label className="text-sm text-gray-600">Weight:</label>
           <div className="flex items-center gap-2">
             <input 
-              className="flex-1 border rounded-lg p-2"
+              className="w-16 border rounded-lg p-2 text-center"
               type="number" 
               value={value.weight ?? ""}
               onChange={(e) =>
@@ -66,28 +74,30 @@ export function DraftEntryForm({
         <div>
           <div className="space-y-2">
             <label className="text-sm text-gray-600">Number of weights:</label>
-            <input 
-              className="w-full border rounded-lg p-2"
-              type="number" 
-              value={value.numOfWeights ?? ""}
-              onChange={(e) =>
-                onChange({
-                  ...value,
-                  numOfWeights: e.target.value === "" ? null : Number(e.target.value)
-                })
-              }
-            />
+            <div className="flex items-center gap-2">
+              <input
+                className="w-16 border rounded-lg p-2 text-center"
+                type="number"
+                value={value.numOfWeights ?? ""}
+                onChange={(e) =>
+                  onChange({
+                    ...value,
+                    numOfWeights: e.target.value === "" ? null : Number(e.target.value)
+                  })
+                }
+              />
+            </div>
           </div>
         </div>       
       </div>
 
       {/* reps and sets*/}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2">
         <div className="space-y-2">
           <label className="text-sm text-gray-600">Reps:</label>
           <div className="flex items-center gap-2">
             <input 
-              className="flex-1 border rounded-lg p-2"
+              className="w-16 border rounded-lg p-2 text-center"
               type="number" 
               value={value.reps ?? ""}
               onChange={(e) =>
@@ -104,7 +114,7 @@ export function DraftEntryForm({
           <label className="text-sm text-gray-600">Sets:</label>
           <div className="flex items-center gap-2">
             <input 
-              className="flex-1 border rounded-lg p-2"
+              className="w-16 border rounded-lg p-2 text-center"
               type="number" 
               value={value.sets}
               onChange={(e) =>

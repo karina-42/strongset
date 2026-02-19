@@ -16,7 +16,7 @@ export function DraftEntryForm({
   onSubmit,
 }: DraftEntryFormProps) {
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
+    <div className="bg-white rounded-xl p-4 shadow-sm space-y-4" id="exercise-form">
       <h1>Selected Exercise</h1>
 
       {/* Display name and date last done*/}

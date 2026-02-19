@@ -250,6 +250,9 @@ if (editingEntryId) {
       restSec: lastEntry.restSec,
       note: lastEntry.note,
     })
+
+    // scroll to form
+    document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   // function for setting editingEntryId and load data into draft Input
@@ -372,14 +375,14 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
       {/* header */}
             {/* logo */}
       <div className='flex items-center justify-between px-3 py-3'>
-        <img src={strongsetLogo} className="h-10" alt="StrongSet"></img>
+        <img src={strongsetLogo} className="h-16" alt="StrongSet"></img>
         {mode === 'gym' && (
           <div className='text-sm text-right'>
             {/* cost header */}
             <MonthlyStatsHeader
               monthlyFee={monthlyFee}
               monthlyStats={monthlyStats}
-              ></MonthlyStatsHeader>
+            ></MonthlyStatsHeader>
           </div>
         )}
       </div>
@@ -426,7 +429,6 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
 
           <div>
             {/* Display a list of today's logged exercises */}
-            <h1>Today's Entries</h1>
             <TodayEntriesList 
               entries={todayEntriesForDisplay}
               onEdit = {handleEditEntry} 

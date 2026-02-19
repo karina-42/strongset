@@ -1,9 +1,11 @@
+import { useState } from "react";
 import type { DraftEntryInput } from "../types"
 
 type DraftEntryFormProps = {
   value: DraftEntryInput;
   lastDoneDate: Date | null;
   isEditing: boolean;
+  onClear: () => void;
   onChange: (value: DraftEntryInput) => void;
   onSubmit: () => void;
 }
@@ -12,19 +14,30 @@ export function DraftEntryForm({
   value,
   lastDoneDate,
   isEditing,
+  onClear,
   onChange,
   onSubmit,
 }: DraftEntryFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   return (
     <div className="bg-gray-100 rounded-xl p-4 shadow-sm space-y-4" id="exercise-form">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-emerald-700">Selected Exercise</h2>
-        <button
-          className="px-4 py-2 bg-emerald-500 text-white rounded active:bg-emerald-600 text-sm cursor-pointer"
-          onClick={() => document.getElementById('exercise-browser')?.scrollIntoView({ behavior: 'smooth'})}
-        >
-          ↑ Select
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="px-3 py-2 bg-gray-400 text-white rounded active:bg-gray-500 text-sm"
+            onClick={onClear}
+          >
+            Clear
+          </button>
+          <button
+            className="px-4 py-2 bg-emerald-500 text-white rounded active:bg-emerald-600 text-sm cursor-pointer"
+            onClick={() => document.getElementById('exercise-browser')?.scrollIntoView({ behavior: 'smooth'})}
+          >
+            ↑ Select
+          </button>
+        </div>
       </div>
 
       {/* Display name and date last done*/}
@@ -198,16 +211,25 @@ export function DraftEntryForm({
       </fieldset>
         
       {/* Click and save the draft into today's entries */}
-      <button onClick={onSubmit} className={`
-        w-full
-        ${isEditing ? 'bg-orange-500' : 'bg-emerald-500'}
-        text-white
-        py-3
-        rounded-xl
-        font-semibold
-        active:scale-95
-        cursor-pointer
-        `}>{isEditing ? "Update Entry" : "Add Entry"}
+      <button 
+        onClick={async () => {
+          setIsSubmitting(true)
+          await onSubmit()
+          setIsSubmitting(false)
+        }}
+        className={`
+          w-full
+          ${isEditing ? 'bg-orange-500' : 'bg-emerald-500'}
+          ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
+          text-white
+          py-3
+          rounded-xl
+          font-semibold
+          active:scale-95
+          cursor-pointer
+        `}
+      >
+        {isSubmitting ? 'Adding...' : (isEditing ? "Update Entry" : "Add Entry")}
       </button>
     </div>
   )

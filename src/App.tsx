@@ -62,6 +62,7 @@ function App() {
   const [videoTab, setVideoTab] = useState<VideoTab>("list");
   const [historyArea, setHistoryArea] = useState<Exercise['area'] | 'all'>('all')
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
+  
 
   // To display the last done date
   const lastDoneDate = (() => {
@@ -367,6 +368,15 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
     setTodayEntries(prev => prev.filter(entry => entry.id !== entryId))
   }
 
+  // handle clearing input form
+  const handleClearForm = () => {
+    setDraftInput(prev => ({
+      ...defaultInput,
+      area: prev.area,
+    }))
+    setEditingEntryId(null)
+  }
+
 /***************************************************/
 /***************************************************/
   // THE UI
@@ -419,6 +429,7 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
               value={draftInput}
               lastDoneDate={lastDoneDate}
               isEditing = {editingEntryId !== null}
+              onClear={handleClearForm}
               onChange={setDraftInput}
               onSubmit={() => {
                 handleSubmitDraft(draftInput)

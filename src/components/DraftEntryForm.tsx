@@ -20,7 +20,7 @@ export function DraftEntryForm({
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-emerald-700">Selected Exercise</h2>
         <button
-          className="px-4 py-2 bg-emerald-500 text-white rounded active:bg-emerald-600 text-sm"
+          className="px-4 py-2 bg-emerald-500 text-white rounded active:bg-emerald-600 text-sm cursor-pointer"
           onClick={() => document.getElementById('exercise-browser')?.scrollIntoView({ behavior: 'smooth'})}
         >
           ↑ Select
@@ -206,6 +206,7 @@ export function DraftEntryForm({
         rounded-xl
         font-semibold
         active:scale-95
+        cursor-pointer
         `}>{isEditing ? "Update Entry" : "Add Entry"}
       </button>
     </div>

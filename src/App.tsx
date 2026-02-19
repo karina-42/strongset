@@ -388,17 +388,17 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
       </div>
       {/* Handle switching modes */}
       <div className='flex gap-1 p-2 bg-gray-100 rounded-lg mb-4 mx-3'>
-        <button className={`flex-1 py-2 rounded-md transition-colors ${
+        <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
           mode === "gym" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
         }`} onClick={() => setMode("gym")}>
           Gym
         </button>
-        <button className={`flex-1 py-2 rounded-md transition-colors ${
+        <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
           mode === "history" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
         }`} onClick={() => setMode("history")}>
           History
         </button>
-        <button className={`flex-1 py-2 rounded-md transition-colors ${
+        <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
           mode === "video" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
         }`} onClick={() => setMode("video")}>
           Video
@@ -435,8 +435,17 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
           </div>
           
           {/* Finish workout button */}
-          <div className='mt-6'>
-            <button className='px-4 py-2 rounded bg-red-500 text-white' onClick={finishWorkout}>Finish Workout</button>
+          <div className='mt-12 px-3 pb-6'>
+            <button
+              className='mx-auto block px-8 py-3 rounded bg-red-600 text-white rounded-xl font-semibold active:bg-red-700 shadow-lg cursor-pointer' 
+              onClick={() => {
+                if (confirm('Ready to be done?')) {
+                finishWorkout()
+                }
+              }}
+            >
+             ✓ Finish Workout
+            </button>
           </div>
         </>
       )}

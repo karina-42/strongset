@@ -14,9 +14,9 @@ export function MonthlyStatsHeader({
 }: MonthlyStatsHeaderProps) {
   const {visitCount, costPerVisit} = monthlyStats
   const isGoodValue = costPerVisit && costPerVisit < (monthlyFee / 8) // 8+ visits = good
-  const bgColor = visitCount === 0 ? 'bg-red-50 border-red-500' :
-    isGoodValue ? 'bg-emerald-50 border-emerald-500' :
-    'bg-yellow-50 border-yellow-500'
+  const bgColor = visitCount === 0 ? 'bg-red-300 border-red-500 border' :
+    isGoodValue ? 'bg-emerald-500 border-emerald-900 border' :
+    'bg-yellow-300 border-yellow-500 border'
   return (
     <div className={`mx-3 mb-4 p-4 ${bgColor} rounded-lg`}>
       

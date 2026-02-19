@@ -22,7 +22,7 @@ export function TodayEntriesList({entries, onEdit, onDelete}: TodayEntriesListPr
                   {entry.note && <p className="text-sm text-gray-600">{entry.note}</p>}
                 </div>
                 <button
-                  className="px-3 py-1 bg-purple-500 text-white text-sm rounded-lg active:bg-purple-600"
+                  className="px-3 py-1 bg-purple-500 text-white text-sm rounded-lg active:bg-purple-600 cursor-pointer"
                   onClick={() => {
                     onEdit(entry.id)
                     document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})
@@ -31,7 +31,7 @@ export function TodayEntriesList({entries, onEdit, onDelete}: TodayEntriesListPr
                     Edit
                   </button>
                 <button
-                  className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg active:bg-red-600 ml-2" 
+                  className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg active:bg-red-600 ml-2 cursor-pointer" 
                   onClick={() => onDelete(entry.id)}
                 >
                   X

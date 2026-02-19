@@ -23,7 +23,7 @@ export function ExerciseBrowser({
   const [filter, setFilter] = useState<Filter>("all")
   const getButtonClass = (buttonFilter: Filter) => {
     const isActive = filter === buttonFilter
-    return `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`
+    return `px-4 py-2 rounded cursor-pointer ${isActive ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`
   }
   const filteredExercises = exercises.filter(ex => {
     if (filter === "all") return true
@@ -35,7 +35,7 @@ export function ExerciseBrowser({
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-purple-700">Exercise List</h1>
         <button
-            className="px-4 py-2 bg-purple-500 text-white rounded active:bg-purple-600 text-sm"
+            className="px-4 py-2 bg-purple-500 text-white rounded active:bg-purple-600 text-sm cursor-pointer"
             onClick={() => document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})}
           >
             ↓ Add new

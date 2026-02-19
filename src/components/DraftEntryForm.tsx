@@ -32,7 +32,7 @@ export function DraftEntryForm({
             Clear
           </button>
           <button
-            className="px-3 py-2 bg-emerald-500 text-white rounded active:bg-emerald-600 text-sm cursor-pointer"
+            className="px-4 py-2 bg-emerald-500 text-white rounded active:bg-emerald-600 text-sm cursor-pointer whitespace-nowrap"
             onClick={() => document.getElementById('exercise-browser')?.scrollIntoView({ behavior: 'smooth'})}
           >
             ↑ Select

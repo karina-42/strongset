@@ -32,22 +32,22 @@ export function ExerciseBrowser({
 
   return (
     <div className="bg-gray-100 rounded-xl p-4 shadow-sm space-y-4" id="exercise-browser">
-      <h1 className="text-3xl font-bold text-purple-700">Exercise List</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-purple-700">Exercise List</h1>
+        <button
+            className="px-4 py-2 bg-purple-500 text-white rounded active:bg-purple-600 text-sm"
+            onClick={() => document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})}
+          >
+            ↓ Add new
+          </button>
+      </div>
       
       {/* Buttons to filter exercises */}
-      <div className="flex justify-between items-center gap-2 flex-wrap">
-        <div className="flex gap-2">
-          <button type='button' name='all' className={getButtonClass("all")} onClick={() => setFilter("all")}>All</button>
-          <button type='button' name='upper' className={getButtonClass("upper")} onClick={() => setFilter("upper")}>Upper</button>
-          <button type='button' name='lower' className={getButtonClass("lower")} onClick={() => setFilter("lower")}>Lower</button>
-          <button type='button' name='full' className={getButtonClass("full")} onClick={() => setFilter("full")}>Full</button>
-        </div>
-        <button
-          className="px-4 py-2 bg-purple-500 text-white rounded active:bg-purple-600 text-sm"
-          onClick={() => document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})}
-        >
-          ↓ Add new
-        </button>
+      <div className="flex gap-2 flex-wrap">
+        <button type='button' name='all' className={getButtonClass("all")} onClick={() => setFilter("all")}>All</button>
+        <button type='button' name='upper' className={getButtonClass("upper")} onClick={() => setFilter("upper")}>Upper</button>
+        <button type='button' name='lower' className={getButtonClass("lower")} onClick={() => setFilter("lower")}>Lower</button>
+        <button type='button' name='full' className={getButtonClass("full")} onClick={() => setFilter("full")}>Full</button>
       </div>
 
       {/* Display  list of exercises */}

@@ -23,7 +23,7 @@ export function DraftEntryForm({
   return (
     <div className="bg-gray-100 rounded-xl p-4 shadow-sm space-y-4" id="exercise-form">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-emerald-700">Selected Exercise</h2>
+        <h2 className="text-2xl sm:text-3xl  font-bold text-emerald-700">Selected Exercise</h2>
         <div className="flex gap-2">
           <button
             className="px-3 py-2 bg-gray-400 text-white rounded active:bg-gray-500 text-sm"

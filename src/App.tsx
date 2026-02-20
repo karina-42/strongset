@@ -13,6 +13,7 @@ import { TodayEntriesList } from './components/TodayEntriesList'
 import { ExerciseBrowser } from './components/ExerciseBrowser'
 import { calculateMonthlyStats } from './utils/monthlyStats'
 import { VideoForm } from './components/VideoForm'
+import { getVisitGradientClasses } from './utils/visitColors'
 import './App.css'
 
 const STORAGE_KEY = "strongset-today-entries"
@@ -446,9 +447,13 @@ const historyByExercise = filteredHistory.reduce((acc, entry) => {
           </div>
           
           {/* Finish workout button */}
-          <div className='mt-12 px-3 pb-6'>
+          <div className={`mt-12 p-4 mx-3 mb-6 rounded-lg border-l-4 ${getVisitGradientClasses(monthlyStats.visitCount)}`}>
             <button
-              className='mx-auto block px-8 py-3 rounded bg-red-600 text-white rounded-xl font-semibold active:bg-red-700 shadow-lg cursor-pointer' 
+              className={`w-full py-3 ${
+                monthlyStats.visitCount >= 12
+                ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900'
+                : 'bg-red-600 text-white'
+              } rounded-xl font-semibold active:scale-95 shadow-lg cursor-pointer`} 
               onClick={() => {
                 if (confirm('Ready to be done?')) {
                 finishWorkout()

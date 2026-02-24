@@ -4,11 +4,13 @@ import { useState } from "react";
 interface HistoryModeProps {
   exercises: Exercise[];
   workoutHistory: WorkoutEntry[];
+  onDelete: (value: string) => void;
 }
 
 export function HistoryMode({
   exercises,
   workoutHistory,
+  onDelete,
 }: HistoryModeProps) {
   const [historyArea, setHistoryArea] = useState<Exercise['area'] | 'all'>('all')
 
@@ -84,11 +86,23 @@ export function HistoryMode({
             {/* Show last 3 sessions */}
             <div className='mt-2 space-y-1'>
               {sortedEntries.slice(0, 3).map(entry => (
-                <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded'>
-                  <span>{entry.dateDone.toLocaleDateString()}: </span>
-                  {entry.weight && <span>{entry.weight}kg x {entry.numOfWeights} </span>}
-                  <span>{entry.sets} sets x {entry.reps} reps</span>
-                  {entry.note && <span className='text-gray-600'> - {entry.note}</span>}
+                <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded flex justify-between items-start'>
+                  <div>
+                    <span>{entry.dateDone.toLocaleDateString()}: </span>
+                    {entry.weight && <span>{entry.weight}kg x {entry.numOfWeights} </span>}
+                    <span>{entry.sets} sets x {entry.reps} reps</span>
+                    {entry.note && <span className='text-gray-600'> - {entry.note}</span>}
+                  </div>
+                  <button
+                    className="px-2 py-1 bg-red-500 text-white text-sm rounded active:bg-red-600 ml-2 cursor-pointer" 
+                    onClick={() => {
+                      if (confirm('Delete entry?')) {
+                        onDelete(entry.id)
+                      }
+                    }}
+                  >
+                    x
+                  </button>
                 </div>
               ))}
             </div>

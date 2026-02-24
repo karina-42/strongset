@@ -352,6 +352,13 @@ if (editingEntryId) {
     setTodayEntries(prev => prev.filter(entry => entry.id !== entryId))
   }
 
+  async function handleDeleteHistoryEntry(entryId: string) {
+    await fetch(`${API_URL}/workouts/${entryId}`, {
+      method: "DELETE",
+    })
+    setWorkoutHistory(prev => prev.filter(entry => entry.id !== entryId))
+  }
+
   // handle clearing input form
   const handleClearForm = () => {
     setDraftInput(prev => ({
@@ -399,6 +406,7 @@ if (editingEntryId) {
         </button>
       </div>
 
+      {/* Gym Mode */}
       {mode === "gym" && (
         <>
           {/* exercise browser, button filters and list */}
@@ -455,6 +463,7 @@ if (editingEntryId) {
           <HistoryMode
           exercises={exercises}
           workoutHistory={workoutHistory}
+          onDelete={handleDeleteHistoryEntry}
           />
         </>
        )}

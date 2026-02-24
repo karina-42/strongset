@@ -56,6 +56,13 @@ app.get("/exercises", async (req, res) => {
   res.json(all)
 })
 
+app.delete('/workouts/:id', async (req, res) => {
+  const { id } = req.params
+  // Delete from MongoDB
+  await db.collection('workouts').deleteOne({ id: id })
+  res.json({ success: true })
+})
+
 app.listen(4000, () => {
   console.log("Server runnning on http://localhost:4000")
 })

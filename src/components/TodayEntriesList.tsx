@@ -32,7 +32,11 @@ export function TodayEntriesList({entries, onEdit, onDelete}: TodayEntriesListPr
                   </button>
                 <button
                   className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg active:bg-red-600 ml-2 cursor-pointer" 
-                  onClick={() => onDelete(entry.id)}
+                  onClick={() => {
+                    if (confirm('Delete entry?')) {
+                      onDelete(entry.id)
+                    }
+                  }}
                 >
                   X
                 </button>

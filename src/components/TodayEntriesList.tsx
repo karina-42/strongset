@@ -22,7 +22,7 @@ export function TodayEntriesList({entries, onEdit, onDelete}: TodayEntriesListPr
                   {entry.note && <p className="text-sm text-gray-600">{entry.note}</p>}
                 </div>
                 <button
-                  className="px-3 py-1 bg-purple-500 text-white text-sm rounded-lg active:bg-purple-600 cursor-pointer"
+                  className="px-3 py-1 bg-blue-500 text-white text-sm rounded-lg active:bg-blue-600 cursor-pointer"
                   onClick={() => {
                     onEdit(entry.id)
                     document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})

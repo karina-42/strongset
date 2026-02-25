@@ -114,34 +114,82 @@ function App() {
     }
 
     //check if editing or adding new
-if (editingEntryId) {
-  //UPDATE existing entry
-  setTodayEntries(prev =>
-    prev.map(entry =>
-      entry.id === editingEntryId
-      ? {...entry, ...input, exerciseId: exercise!.id, area: exercise!.area}
-      : entry
-    )
-  )
-  setEditingEntryId(null) // Exit edit mode
-} else {
-    // Create that day's workout entry
-    const newEntry: WorkoutEntry = {
-      id: crypto.randomUUID(),
-      exerciseId: exercise.id,
-      weight: input.weight,
-      numOfWeights: input.numOfWeights,
-      reps: input.reps,
-      sets: input.sets,
-      restMin: input.restMin,
-      restSec: input.restSec,
-      note: input.note,
-      dateDone: new Date(),
-      area: exercise.area
+    if (editingEntryId) {
+      //Check which array it's in
+      const isInToday = todayEntries.some(entry => entry.id === editingEntryId)
+
+      if (isInToday) {
+        //UPDATE todayEntries
+        setTodayEntries(prev =>
+          prev.map(entry =>
+            entry.id === editingEntryId
+            ? {...entry, ...input, exerciseId: exercise!.id, area: exercise!.area}
+            : entry
+          )
+        )
+        setEditingEntryId(null) // Exit edit mode
+      } else { // Editing workoutHistory entry
+        // UPDATE workoutHistory + database
+
+        // Get original entry for dateDone
+        const originalEntry = workoutHistory.find(entry => entry.id === editingEntryId)
+        if (!originalEntry) return
+
+        // Create updated entry object
+        const updatedEntry = {
+          id: editingEntryId,
+          exerciseId: exercise!.id,
+          weight: input.weight,
+          numOfWeights: input.numOfWeights,
+          reps: input.reps,
+          sets: input.sets,
+          restMin: input.restMin,
+          restSec: input.restSec,
+          note: input.note,
+          dateDone: originalEntry.dateDone,
+          area: exercise.area
+        }
+
+        // Update database
+        await fetch(`${API_URL}/workouts/${editingEntryId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedEntry)
+        })
+
+        // Update state
+        setWorkoutHistory(prev =>
+          prev.map(entry =>
+            entry.id === editingEntryId
+            ? updatedEntry
+            : entry
+          )
+        )
+        setEditingEntryId(null)
+
+        setMode("history")
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth'})
+        }, 100)
+      }
+    } else {
+      // Create that day's workout entry
+      const newEntry: WorkoutEntry = {
+        id: crypto.randomUUID(),
+        exerciseId: exercise.id,
+        weight: input.weight,
+        numOfWeights: input.numOfWeights,
+        reps: input.reps,
+        sets: input.sets,
+        restMin: input.restMin,
+        restSec: input.restSec,
+        note: input.note,
+        dateDone: new Date(),
+        area: exercise.area
+      }
+      // add it to day's entries
+      setTodayEntries(prev => [...prev, newEntry])
     }
-    // add it to day's entries
-    setTodayEntries(prev => [...prev, newEntry])
-}
 
     // reset the form
     setDraftInput( prev => ({
@@ -150,7 +198,7 @@ if (editingEntryId) {
     }))
   }
 
-    // Function to handle submitting a workout video form to save
+  // Function to handle submitting a workout video form to save
   async function handleSubmitWorkoutVideo(input: DraftVideoWorkout) {
     if (!input.url.trim()) return
     
@@ -352,6 +400,34 @@ if (editingEntryId) {
     setTodayEntries(prev => prev.filter(entry => entry.id !== entryId))
   }
 
+  // function to edit a history entry for setting editingEntryId and load data into draft Input
+  function handleEditHistoryEntry(editId: string) {
+    const historyEntryToEdit = workoutHistory.find(entry => entry.id === editId)
+    if (!historyEntryToEdit) return
+
+    const exercise = exercises.find(ex => ex.id === historyEntryToEdit.exerciseId)
+    if (!exercise) return 
+
+    setEditingEntryId(editId)
+
+    setDraftInput({
+      exerciseName: exercise.name,
+      area: historyEntryToEdit.area,
+      weight: historyEntryToEdit.weight,
+      numOfWeights: historyEntryToEdit.numOfWeights,
+      reps: historyEntryToEdit.reps,
+      sets: historyEntryToEdit.sets,
+      restMin: historyEntryToEdit.restMin,
+      restSec: historyEntryToEdit.restSec,
+      note: historyEntryToEdit.note,
+    })
+
+    setMode("gym")
+    setTimeout(() => {
+      document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})
+    }, 100)
+  }
+
   async function handleDeleteHistoryEntry(entryId: string) {
     await fetch(`${API_URL}/workouts/${entryId}`, {
       method: "DELETE",
@@ -463,6 +539,7 @@ if (editingEntryId) {
           <HistoryMode
           exercises={exercises}
           workoutHistory={workoutHistory}
+          onEdit = {handleEditHistoryEntry}
           onDelete={handleDeleteHistoryEntry}
           />
         </>

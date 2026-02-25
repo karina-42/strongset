@@ -4,12 +4,14 @@ import { useState } from "react";
 interface HistoryModeProps {
   exercises: Exercise[];
   workoutHistory: WorkoutEntry[];
+  onEdit: ( value: string) => void;
   onDelete: (value: string) => void;
 }
 
 export function HistoryMode({
   exercises,
   workoutHistory,
+  onEdit,
   onDelete,
 }: HistoryModeProps) {
   const [historyArea, setHistoryArea] = useState<Exercise['area'] | 'all'>('all')
@@ -93,6 +95,15 @@ export function HistoryMode({
                     <span>{entry.sets} sets x {entry.reps} reps</span>
                     {entry.note && <span className='text-gray-600'> - {entry.note}</span>}
                   </div>
+                  {/* Edit and Delete buttons */}
+                  <button
+                  className="px-3 py-1 bg-purple-500 text-white text-sm rounded-lg active:bg-purple-600 cursor-pointer"
+                  onClick={() => {
+                    onEdit(entry.id)
+                  }}
+                  >
+                    Edit
+                  </button>
                   <button
                     className="px-2 py-1 bg-red-500 text-white text-sm rounded active:bg-red-600 ml-2 cursor-pointer" 
                     onClick={() => {

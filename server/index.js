@@ -41,6 +41,18 @@ app.post("/exercises", async (req,res) => {
   res.json({ ok: true })
 })
 
+app.put("/workouts/:id", async (req, res) => {
+  const { id } = req.params
+  const updatedWorkout = req.body
+  // Update in MongoDB
+  await db.collection('workouts').updateOne(
+    { id: id },
+    { $set: updatedWorkout }
+  )
+
+  res.json({ success: true })
+})
+
 app.get("/videos", async (req, res) => {
   const allVideos = await videos.find().toArray()
   res.json(allVideos)

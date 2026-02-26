@@ -88,6 +88,6 @@ app.delete('/workouts/:id', async (req, res) => {
   res.json({ success: true })
 })
 
-app.listen(4000, () => {
+app.listen(process.env.PORT || 4000, () => {
   console.log("Server runnning on http://localhost:4000")
 })

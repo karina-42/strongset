@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb"
 import cors from "cors"
 
 const app = express()
+const port = process.env.PORT || 4000
 app.use(cors())
 app.use(express.json())
 
@@ -88,6 +89,6 @@ app.delete('/workouts/:id', async (req, res) => {
   res.json({ success: true })
 })
 
-app.listen(process.env.PORT || 4000, () => {
-  console.log("Server runnning on http://localhost:4000")
+app.listen(port, () => {
+  console.log(`Server runnning on port ${port}`)
 })

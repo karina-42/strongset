@@ -56,7 +56,7 @@ export type DraftEntryInput = {
   note?: string;
 }
 
-export type AppMode = "gym" | "video" | "history";
+export type AppMode = "gym" | "video" | "history" | "sleep";
 
 export type VideoTab = "add" | "list" | "search" | "edit";
 
@@ -68,4 +68,12 @@ export type DraftVideoWorkout = {
   note?: string;
   area: "upper" | "lower" | "full";
   repeatFlag: "do-again" | "neutral" | "dont-do-again";
+}
+
+export type SleepEntry = {
+  id: string;
+  date: Date;
+  bedtime: string;
+  goalTime: string;
+  metGoal: boolean;
 }

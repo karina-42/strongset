@@ -7,6 +7,7 @@ import type { VideoWorkout } from './db/models/VideoWorkout'
 import type { AppMode } from './types'
 import type { VideoTab } from './types'
 import type { DraftVideoWorkout } from './types'
+import type { SleepEntry } from './types'
 import { DraftEntryForm } from './components/DraftEntryForm'
 import { MonthlyStatsHeader } from './components/MonthlyStatsHeader'
 import { TodayEntriesList } from './components/TodayEntriesList'
@@ -14,8 +15,10 @@ import { ExerciseBrowser } from './components/ExerciseBrowser'
 import { HistoryMode } from './components/HistoryMode'
 import { calculateMonthlyStats } from './utils/monthlyStats'
 import { VideoForm } from './components/VideoForm'
+import { SleepTracker } from './components/SleepTracker'
 import { getVisitGradientClasses } from './utils/visitColors'
 import './App.css'
+import { getTabColors } from './utils/tabColors'
 
 const STORAGE_KEY = "strongset-today-entries"
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000"
@@ -63,7 +66,8 @@ function App() {
   const [mode, setMode] = useState<AppMode>("gym");
   const [videoTab, setVideoTab] = useState<VideoTab>("list");
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
-  
+  const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
+  const [sleepGoalTime, setSleepGoalTime] = useState<string>("23:45")
 
   // To display the last done date
   const lastDoneDate = (() => {
@@ -395,6 +399,19 @@ function App() {
     }
   })
 
+  useEffect(() => {
+    fetch(`${API_URL}/sleep`)
+    .then(r => r.json())
+    .then((data: SleepEntry[]) =>
+      setSleepEntries(
+        data.map(e => ({
+          ...e,
+          date: new Date(e.date),
+        }))
+      )
+    )
+  }, [])
+
   // handle deleting an entry from Today's Entries
   const handleDeleteEntry = (entryId: string) => {
     setTodayEntries(prev => prev.filter(entry => entry.id !== entryId))
@@ -444,13 +461,41 @@ function App() {
     setEditingEntryId(null)
   }
 
+  // Handle adding a sleep entry
+  async function handleAddSleepEntry() {
+    const now = new Date()
+    const hour = now.getHours().toString().padStart(2, '0')
+    const minutes = now.getMinutes().toString().padStart(2, '0')
+    const currentTime = `${hour}:${minutes}`
+
+    const sleepEntry: SleepEntry = {
+      id: crypto.randomUUID(),
+      date: now,
+      bedtime: currentTime,
+      goalTime: sleepGoalTime,
+      metGoal: currentTime <= sleepGoalTime,
+    }
+
+    setSleepEntries(prev => [...prev, sleepEntry])
+
+    await fetch(`${API_URL}/sleep`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(sleepEntry),
+    })
+  }
+
+
+/***************************************************/
+/***************************************************/
+/***************************************************/
 /***************************************************/
 /***************************************************/
   // THE UI
   return (
-    <>
+    <div className={`min-h-screen ${mode === 'sleep' ? 'bg-blue-950' : 'bg-white'}`}>
       {/* header */}
-            {/* logo */}
+      {/* logo */}
       <div className='flex items-center justify-between px-3 py-3'>
         <img src={strongsetLogo} className="h-16" alt="StrongSet"></img>
         {mode === 'gym' && (
@@ -464,19 +509,30 @@ function App() {
         )}
       </div>
       {/* Handle switching modes */}
-      <div className='flex gap-1 p-2 bg-gray-100 rounded-lg mb-4 mx-3'>
+      <div className={`flex gap-1 p-2 rounded-lg mb-4 mx-3 ${
+        mode === 'sleep' ? 'bg-blue-900' : 'bg-gray-100'
+        }`}>
         <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
-          mode === "gym" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          // mode === "gym" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          getTabColors("gym", mode)
         }`} onClick={() => setMode("gym")}>
           Gym
         </button>
         <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
-          mode === "history" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          //mode === "history" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          getTabColors("history", mode)
         }`} onClick={() => setMode("history")}>
           History
         </button>
         <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
-          mode === "video" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          //mode === "sleep" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          getTabColors("sleep", mode)
+        }`} onClick={() => setMode("sleep")}>
+          Sleep
+        </button>
+        <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
+          //mode === "video" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          getTabColors("video", mode)
         }`} onClick={() => setMode("video")}>
           Video
         </button>
@@ -534,16 +590,28 @@ function App() {
       )}
 
       {/* History Mode */}
-       {mode === "history" && (
+      {mode === "history" && (
+      <>
+        <HistoryMode
+        exercises={exercises}
+        workoutHistory={workoutHistory}
+        onEdit = {handleEditHistoryEntry}
+        onDelete={handleDeleteHistoryEntry}
+        />
+      </>
+      )}
+
+      {/* Sleep Tracker */}
+      {mode === "sleep" && (
         <>
-          <HistoryMode
-          exercises={exercises}
-          workoutHistory={workoutHistory}
-          onEdit = {handleEditHistoryEntry}
-          onDelete={handleDeleteHistoryEntry}
+          <SleepTracker
+          sleepEntries={sleepEntries}
+          goalTime={sleepGoalTime}
+          onAddEntry={handleAddSleepEntry}
+          onSetGoalTime={setSleepGoalTime}
           />
         </>
-       )}
+      )}
 
       {/* Video tab */}
       {mode === "video" && (
@@ -606,7 +674,7 @@ function App() {
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

@@ -14,6 +14,7 @@ const db = client.db("workouts")
 const videos = db.collection("videos")
 const workouts = db.collection("workouts")
 const exercises = db.collection("exercises")
+const sleepEntries = db.collection("sleep")
 
 app.post("/videos", async (req, res) => {
   const video = {
@@ -41,6 +42,12 @@ app.post("/exercises", async (req,res) => {
   res.json({ ok: true })
 })
 
+app.post("/sleep", async (req, res) => {
+  // save to sleep
+  await sleepEntries.insertOne(req.body)
+  res.json({ success: true, entry: req.body })
+})
+
 app.put("/workouts/:id", async (req, res) => {
   const { id } = req.params
   const updatedWorkout = req.body
@@ -65,6 +72,12 @@ app.get("/workouts", async (req, res) => {
 
 app.get("/exercises", async (req, res) => {
   const all = await exercises.find().toArray()
+  res.json(all)
+})
+
+app.get("/sleep", async (req, res) => {
+  //fetch from sleep
+  const all = await sleepEntries.find().toArray()
   res.json(all)
 })
 

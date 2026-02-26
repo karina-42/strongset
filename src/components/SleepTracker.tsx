@@ -49,7 +49,7 @@ export function SleepTracker({
   
   return (
     <div className="space-y-4 p-4">
-      <h1 className="text-3xl font-bold text-purple-700">Sleep Tracker</h1>
+      <h1 className="text-3xl font-bold text-purple-700">Bedtime Tracker</h1>
 
       {/* Clock and Goal Card */}
       <div className="bg-gray-900 rounded-2xl p-6 text-center shadow-lg">
@@ -105,7 +105,7 @@ export function SleepTracker({
         onClick={onAddEntry}
         className="w-full bg-emerald-700 text-white py-4 rounded-2xl font-bold text-lg active:bd-emerald-600 active:scale-95 transition-transform shadow-md cursor-pointer"
       >
-        🌙 I'm going to bed
+        🌙 Phone down, Lights out
       </button>
 
       {/* History, Recent Nights */}

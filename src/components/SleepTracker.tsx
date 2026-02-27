@@ -42,11 +42,31 @@ export function SleepTracker({
     }
     return `${numHour}:${minutes} ${meridian}`;
   }
+
+  function minutesUntilWakeUp() {
+    const hours = currentTime.getHours()
+    const minutes = currentTime.getMinutes()
+    const wakeUpTime = 6
+    let minutesUntilWakeUp = 0
+
+    const minutesFromMidnight = hours * 60 + minutes
+    const minutesFromMidnightUntilWakeUpTime = wakeUpTime * 60
+    
+    if (minutesFromMidnight < minutesFromMidnightUntilWakeUpTime) {
+      minutesUntilWakeUp = minutesFromMidnightUntilWakeUpTime - minutesFromMidnight
+    } else {
+      minutesUntilWakeUp = 1440 - minutesFromMidnight + minutesFromMidnightUntilWakeUpTime
+    }
+
+    return minutesUntilWakeUp
+  }
   
   const sortedEntries = [...sleepEntries].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
   
+  const mins = minutesUntilWakeUp()
+
   return (
     <div className="space-y-4 p-4">
       <h1 className="text-3xl font-bold text-purple-700">Bedtime Tracker</h1>
@@ -96,6 +116,12 @@ export function SleepTracker({
                 Change
               </button>
             </>
+          )}
+        </div>
+        {/* time til morning */}
+        <div className="text-white">
+          {currentTime.getHours() >= 21 && (
+            <p>🛏️ Sleep now for {Math.floor(mins / 60)}h {mins % 60}m of sleep</p>
           )}
         </div>
       </div>      

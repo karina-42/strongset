@@ -516,7 +516,7 @@ function App() {
           <div className='text-right'>
             {/* Bedtime streak counter */}
             <BedtimeStreakHeader
-              streak={calculateStreak(sortedEntries)}
+              streak={calculateStreak(sortedEntries, sleepGoalTime)}
               goalTime={sleepGoalTime}
             ></BedtimeStreakHeader>
           </div>

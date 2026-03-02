@@ -1,16 +1,22 @@
   import type { SleepEntry } from "../types";
   
-  export function calculateStreak(sortedEntries: SleepEntry[], currentGoalTime: string) {
-    let streak = 0;
+  export function calculateSleepCount(entries: SleepEntry[], currentGoalTime: string) {
     const today = new Date()
-    for (const entry of sortedEntries) {
-      if (entry.date.toLocaleDateString() === today.toLocaleDateString()) {
-        continue        
-      } else if (entry.metGoal && entry.goalTime === currentGoalTime) {
-        streak++
-      } else {
-        break
+
+    // Most recent Sunday
+    const sunday = new Date(today)
+    sunday.setDate(today.getDate() - today.getDay())
+    sunday.setHours(0, 0, 0, 0)
+
+    let metCount = 0;
+    for (const entry of entries) {
+      const entryDate = new Date(entry.date)
+      if (entryDate >= sunday &&
+        entryDate.toLocaleDateString() !== today.toLocaleDateString() &&
+        entry.metGoal &&
+        entry.goalTime === currentGoalTime) {
+      metCount++
       }
     } 
-    return streak
+    return metCount
   }

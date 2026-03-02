@@ -10,7 +10,7 @@ import type { DraftVideoWorkout } from './types'
 import type { SleepEntry } from './types'
 import { DraftEntryForm } from './components/DraftEntryForm'
 import { MonthlyStatsHeader } from './components/MonthlyStatsHeader'
-import { BedtimeStreakHeader } from './components/BedtimeStreakHeader'
+import { BedtimeStreakHeader } from './components/BedtimeWeeklyHeader'
 import { TodayEntriesList } from './components/TodayEntriesList'
 import { ExerciseBrowser } from './components/ExerciseBrowser'
 import { HistoryMode } from './components/HistoryMode'
@@ -20,7 +20,7 @@ import { SleepTracker } from './components/SleepTracker'
 import { getVisitGradientClasses } from './utils/visitColors'
 import './App.css'
 import { getTabColors } from './utils/tabColors'
-import { calculateStreak } from './utils/sleepUtils'
+import { calculateSleepCount } from './utils/sleepUtils'
 
 const STORAGE_KEY = "strongset-today-entries"
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000"
@@ -87,11 +87,6 @@ function App() {
   // To see how much each visit is costing
   const monthlyFee = 8965;
   const monthlyStats = calculateMonthlyStats(workoutHistory, monthlyFee) 
-
-  // To sort the bedtime entries
-  const sortedEntries = [...sleepEntries].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  ); 
 
   // Function to convert a draft entry input to a workout entry
   async function handleSubmitDraft(input: DraftEntryInput) {
@@ -516,7 +511,7 @@ function App() {
           <div className='text-right'>
             {/* Bedtime streak counter */}
             <BedtimeStreakHeader
-              streak={calculateStreak(sortedEntries, sleepGoalTime)}
+              metCount={calculateSleepCount(sleepEntries, sleepGoalTime)}
               goalTime={sleepGoalTime}
             ></BedtimeStreakHeader>
           </div>

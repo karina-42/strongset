@@ -10,7 +10,7 @@ import type { DraftVideoWorkout } from './types'
 import type { SleepEntry } from './types'
 import { DraftEntryForm } from './components/DraftEntryForm'
 import { MonthlyStatsHeader } from './components/MonthlyStatsHeader'
-import { BedtimeStreakHeader } from './components/BedtimeWeeklyHeader'
+import { BedtimeWeeklyHeader } from './components/BedtimeWeeklyHeader'
 import { TodayEntriesList } from './components/TodayEntriesList'
 import { ExerciseBrowser } from './components/ExerciseBrowser'
 import { HistoryMode } from './components/HistoryMode'
@@ -510,10 +510,10 @@ function App() {
         {mode === "sleep" && (
           <div className='text-right'>
             {/* Bedtime streak counter */}
-            <BedtimeStreakHeader
+            <BedtimeWeeklyHeader
               metCount={calculateSleepCount(sleepEntries, sleepGoalTime)}
               goalTime={sleepGoalTime}
-            ></BedtimeStreakHeader>
+            ></BedtimeWeeklyHeader>
           </div>
         )}
       </div>

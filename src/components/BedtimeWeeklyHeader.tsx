@@ -1,12 +1,12 @@
-interface BedtimeStreakHeaderProps {
+interface BedtimeWeeklyHeaderProps {
   metCount: number;
   goalTime: string
 }
 
-export function BedtimeStreakHeader({
+export function BedtimeWeeklyHeader({
   metCount,
   goalTime
-}: BedtimeStreakHeaderProps) {
+}: BedtimeWeeklyHeaderProps) {
   let message = ""
   let color = ""
 

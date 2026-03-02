@@ -60,7 +60,7 @@ export function SleepTracker({
 
     return minutesUntilWakeUp
   }
-  
+ 
   const sortedEntries = [...sleepEntries].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );

@@ -153,7 +153,7 @@ function App() {
           restSec: input.restSec,
           note: input.note,
           dateDone: originalEntry.dateDone,
-          area: exercise.area
+          area: input.area
         }
 
         // Update database
@@ -161,6 +161,13 @@ function App() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedEntry)
+        })
+
+        console.log("updating exercise: ", exercise!.id, "new area: ", input.area)
+        await fetch(`${API_URL}/exercises/${exercise!.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...exercise, area: input.area })
         })
 
         // Update state
@@ -509,7 +516,7 @@ function App() {
         )}
         {mode === "sleep" && (
           <div className='text-right'>
-            {/* Bedtime streak counter */}
+            {/* Bedtime goal met counter */}
             <BedtimeWeeklyHeader
               metCount={calculateSleepCount(sleepEntries, sleepGoalTime)}
               goalTime={sleepGoalTime}

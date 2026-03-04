@@ -61,6 +61,16 @@ app.put("/workouts/:id", async (req, res) => {
   res.json({ success: true })
 })
 
+app.put("/exercises/:id", async (req, res) => {
+  const { id } = req.params
+  const { _id, ...updateData } = req.body
+  await db.collection('exercises').updateOne(
+    { id: id },
+    { $set: updateData }
+  )
+  res.json({ success: true })
+})
+
 app.get("/videos", async (req, res) => {
   const allVideos = await videos.find().toArray()
   res.json(allVideos)

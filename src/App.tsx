@@ -17,6 +17,7 @@ import { HistoryMode } from './components/HistoryMode'
 import { calculateMonthlyStats } from './utils/monthlyStats'
 import { VideoForm } from './components/VideoForm'
 import { SleepTracker } from './components/SleepTracker'
+import { VideoList } from './components/VideoList'
 import { getVisitGradientClasses } from './utils/visitColors'
 import './App.css'
 import { getTabColors } from './utils/tabColors'
@@ -666,24 +667,16 @@ function App() {
           {/* Tab Content */}
           <div className='mt-4'>
           {videoTab === "list" && (
-            <ul>
-              {videoWorkouts.map(video => (
-                <li key={video.id}>
-                  <img src={video.thumbnailUrl} className='w-32 rounded' />
-                  <a href={video.url} target='_blank' rel='noopener noreferrer'>Click to go</a>
-                  <p>{video.title || "Untitled video"}</p>
-                  <p>Tags: {video.tags.join(", ")}</p>
-                  {video.note && <p>{video.note}</p>}
-                </li>
-              ))}
-            </ul>
+            <VideoList
+              videoWorkouts={videoWorkouts}
+            />
           )}
           {videoTab === "add" && (
             <VideoForm
               value={draftVideoWorkout}
               onChange={setDraftVideoWorkout}
               onSubmit={() => handleSubmitWorkoutVideo(draftVideoWorkout)}
-              />
+            />
           )}
           {videoTab === "search" && <div> Search UI goes here</div>}
           {videoTab === "edit" && <div> Edit video UI goes here</div>}

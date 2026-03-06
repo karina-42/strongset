@@ -24,6 +24,10 @@ export function SleepTracker({
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    setGoalInput(goalTime)
+  }, [goalTime])
   
   function convertTime(time: string) {
     const [hour, minutes] = time.split(":");

@@ -164,7 +164,6 @@ function App() {
           body: JSON.stringify(updatedEntry)
         })
 
-        console.log("updating exercise: ", exercise!.id, "new area: ", input.area)
         await fetch(`${API_URL}/exercises/${exercise!.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -393,6 +392,16 @@ function App() {
     }
   }, [url, title])
 
+  useEffect(() => {
+    fetch(`${API_URL}/settings`)
+    .then(r => r.json())
+    .then(data => {
+      if (data[0]?.bedTimeGoal) {
+        setSleepGoalTime(data[0].bedTimeGoal)
+      }
+    })
+  }, [])
+
   //save to localStorage whenever todayEntries changes
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todayEntries))
@@ -491,6 +500,16 @@ function App() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(sleepEntry),
+    })
+  }
+
+  async function handleBedTimeGoal(newGoal: string) {
+    setSleepGoalTime(newGoal)
+    // Update database
+    await fetch(`${API_URL}/settings/`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bedTimeGoal: newGoal })
     })
   }
 
@@ -625,7 +644,7 @@ function App() {
           sleepEntries={sleepEntries}
           goalTime={sleepGoalTime}
           onAddEntry={handleAddSleepEntry}
-          onSetGoalTime={setSleepGoalTime}
+          onSetGoalTime={handleBedTimeGoal}
           />
         </>
       )}

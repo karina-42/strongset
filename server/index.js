@@ -16,6 +16,7 @@ const videos = db.collection("videos")
 const workouts = db.collection("workouts")
 const exercises = db.collection("exercises")
 const sleepEntries = db.collection("sleep")
+const settings = db.collection("settings")
 
 app.post("/videos", async (req, res) => {
   const video = {
@@ -71,6 +72,18 @@ app.put("/exercises/:id", async (req, res) => {
   res.json({ success: true })
 })
 
+app.put("/settings", async (req, res) => {
+  const updatedGoalTime = req.body
+  // Update in MongoDB
+  await db.collection('settings').updateOne(
+    {},
+    { $set: updatedGoalTime },
+    { upsert: true }
+  )
+
+  res.json({ success: true })
+})
+
 app.get("/videos", async (req, res) => {
   const allVideos = await videos.find().toArray()
   res.json(allVideos)
@@ -91,6 +104,12 @@ app.get("/sleep", async (req, res) => {
   const all = await sleepEntries.find().toArray()
   res.json(all)
 })
+
+ app.get("/settings", async (req, res) => {
+  //fetch bed time goal
+  const bedGoalTime = await settings.find().toArray()
+  res.json(bedGoalTime)
+ })
 
 app.delete('/workouts/:id', async (req, res) => {
   const { id } = req.params

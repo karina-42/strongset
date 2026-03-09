@@ -20,7 +20,7 @@ export function BedtimeWeeklyHeader({
     message = `${metCount}/7 this week! Time to update goal! (-15mins)`
     color = "bg-yellow-900 text-yellow-300"
   } else {
-    message = `${metCount}/7 so far 💪 Keep going!`
+    message = `${metCount}/7 so far 💪 Keep sleeping early to grow those muscles!`
     color = "bg-blue-800 text-blue-200"
   }
 

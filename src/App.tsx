@@ -482,16 +482,24 @@ function App() {
   // Handle adding a sleep entry
   async function handleAddSleepEntry() {
     const now = new Date()
+    const entryDate = new Date(now)
     const hour = now.getHours().toString().padStart(2, '0')
     const minutes = now.getMinutes().toString().padStart(2, '0')
     const currentTime = `${hour}:${minutes}`
+    const isAfterMidnight = now.getHours() < 4
+
+    if (isAfterMidnight) {
+      entryDate.setDate(entryDate.getDate() - 1)
+    }
+
+    const metGoal = isAfterMidnight ? false : currentTime <= sleepGoalTime
 
     const sleepEntry: SleepEntry = {
       id: crypto.randomUUID(),
-      date: now,
+      date: entryDate,
       bedtime: currentTime,
       goalTime: sleepGoalTime,
-      metGoal: currentTime <= sleepGoalTime,
+      metGoal: metGoal,
     }
 
     setSleepEntries(prev => [...prev, sleepEntry])

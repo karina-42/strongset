@@ -8,6 +8,7 @@ import type { AppMode } from './types'
 import type { VideoTab } from './types'
 import type { DraftVideoWorkout } from './types'
 import type { SleepEntry } from './types'
+import type { Equipment } from './types'
 import { DraftEntryForm } from './components/DraftEntryForm'
 import { MonthlyStatsHeader } from './components/MonthlyStatsHeader'
 import { BedtimeWeeklyHeader } from './components/BedtimeWeeklyHeader'
@@ -107,7 +108,8 @@ function App() {
       const newExercise: Exercise = {
         id: normalizedName.split(" ").join("-").toLowerCase(),
         name: normalizedName,
-        area: input.area
+        area: input.area,
+        equipment: input.equipment,
       }
 
       await fetch(`${API_URL}/exercises`, {
@@ -521,6 +523,29 @@ function App() {
     })
   }
 
+  async function handleUpdateExercise(exerciseId: string, newEquipment?: Equipment, newName?: string) {
+    setExercises(prev =>
+      prev.map(exercise =>
+        exercise.id === exerciseId
+        ? { ...exercise, 
+          ...(newEquipment && { equipment: newEquipment }),
+          ...(newName && { name: newName })
+        }
+        : exercise
+      )
+    )
+
+    const updates: Record<string, unknown> = {}
+    if (newEquipment) updates.equipment = newEquipment
+    if (newName) updates.name = newName
+
+    await fetch(`${API_URL}/exercises/${exerciseId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates)
+    })
+  }
+
 /***************************************************/
 /***************************************************/
 /***************************************************/
@@ -642,6 +667,7 @@ function App() {
         workoutHistory={workoutHistory}
         onEdit = {handleEditHistoryEntry}
         onDelete={handleDeleteHistoryEntry}
+        onUpdateExercise={handleUpdateExercise}
         />
       </>
       )}

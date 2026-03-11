@@ -1,4 +1,5 @@
 import type { WorkoutEntry, Exercise } from "../types"
+import type { Equipment } from "../types";
 import { useState } from "react";
 
 interface HistoryModeProps {
@@ -6,6 +7,7 @@ interface HistoryModeProps {
   workoutHistory: WorkoutEntry[];
   onEdit: ( value: string) => void;
   onDelete: (value: string) => void;
+  onUpdateExercise: (value: string, equipment?: Equipment, newName?: string) => void;
 }
 
 export function HistoryMode({
@@ -13,8 +15,10 @@ export function HistoryMode({
   workoutHistory,
   onEdit,
   onDelete,
+  onUpdateExercise,
 }: HistoryModeProps) {
   const [historyArea, setHistoryArea] = useState<Exercise['area'] | 'all'>('all')
+  const [showEditExercises, setShowEditExercises] = useState(false)
 
   //filter history by area
   const filteredHistory = historyArea === 'all'
@@ -23,18 +27,62 @@ export function HistoryMode({
   
   //group by exercise for display
   const historyByExercise = filteredHistory.reduce((acc, entry) => {
-  const exercise = exercises.find(e => e.id === entry.exerciseId)
-  const exerciseName = exercise?.name ?? 'Unknown'
+    const exercise = exercises.find(e => e.id === entry.exerciseId)
+    const exerciseName = exercise?.name ?? 'Unknown'
 
-  if (!acc[exerciseName]) {
-    acc[exerciseName] = []
-  }
-  acc[exerciseName].push(entry)
-  return acc
-}, {} as Record<string, WorkoutEntry[]>)
+    if (!acc[exerciseName]) {
+      acc[exerciseName] = []
+    }
+    acc[exerciseName].push(entry)
+    return acc
+  }, {} as Record<string, WorkoutEntry[]>)
 
   return (
     <div className='p-4'>
+      {/* Edit Exercises */}
+      <button onClick={() => setShowEditExercises(prev => !prev)}>
+        {showEditExercises ? "Hide" : "Edit Exercises"}
+      </button>
+
+      {showEditExercises && (
+        <div className="space-y-2 mb-4">
+          {exercises.map(exercise => (
+            <div key={exercise.id} className="bg-gray-300 rounded-xl p3">
+              <p className="font-semibold text-sm mb-2">{exercise.name}</p>
+              <div className="flex flex-wrap gap-1">
+                {(["barbell", "dumbbell", "cable", "smith machine", "machine", "kettleball", "bodyweight", "band"] as const).map(eq =>(
+                  <button
+                    key={eq}
+                    onClick={() => onUpdateExercise(exercise.id, eq, undefined)}
+                    className={`px-2 py-1 rounded text-xs ${
+                      exercise.equipment === eq
+                      ? "bg-purple-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    {eq}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-2 mt-2">
+                <input
+                  type="text"
+                  defaultValue={exercise.name}
+                  onBlur={(e) => {
+                    if (e.target.value !== exercise.name) {
+                      onUpdateExercise(exercise.id, exercise.equipment, e.target.value)
+                    }
+                  }}
+                  className="flex-1 border rounded-lg px-2 py-1 text-sm"
+                />
+              </div>
+            </div>
+          ))}
+          
+        </div>
+      )}
+
+      {/* history */}
       <h1 className="text-3xl font-bold text-purple-700">Workout History</h1>
 
       {/* Area filter */}

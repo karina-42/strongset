@@ -211,6 +211,32 @@ export function DraftEntryForm({
           ))}
         </div>
       </fieldset>
+      
+      {/* equipment */}
+      {value.area !== "kickboxing" && (
+      <fieldset className="border rounded-lg p-3">
+        <legend className="text-sm font-medium text-gray-700 px-2">Equipment used</legend>
+        <div className="flex flex-wrap gap-2">
+          {(["barbell", "dumbbell", "cable", "smith machine", "machine", "bodyweight", "band"] as const).map(equipment => (
+            <label key={equipment} className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="equipment"
+                value={equipment}
+                checked={value.equipment === equipment}
+                onChange={() => 
+                  onChange({
+                    ...value,
+                    equipment,
+                  })
+                }
+              />
+              <span className="capitalize">{equipment}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      )}
         
       {/* Click and save the draft into today's entries */}
       <button 

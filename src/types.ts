@@ -7,12 +7,13 @@ export type Workout = {
 }
 
 // Model for an exercise to store
-// name of the exercise, its id, and what body part 
-// it works 
+// name of the exercise, its id, what body part 
+// it works and equipment it uses
 export interface Exercise {
   name: string;
   id: string;
   area: "upper" | "lower" | "full" | "kickboxing";
+  equipment?: Equipment;
 }
 
 // Model for an entry of a workout
@@ -54,7 +55,10 @@ export type DraftEntryInput = {
   restMin: number;
   restSec: number;
   note?: string;
+  equipment?: Equipment;
 }
+
+export type Equipment = "barbell" | "dumbbell" | "cable" | "smith machine" | "machine" | "bodyweight" | "band" | "kettleball";
 
 export type AppMode = "gym" | "video" | "history" | "sleep";
 

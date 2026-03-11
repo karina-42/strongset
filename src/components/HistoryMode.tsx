@@ -63,6 +63,12 @@ export function HistoryMode({
         >
           Full
         </button>
+        <button
+          className={`px-4 py-2 rounded ${historyArea === 'full' ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`}
+          onClick={() => setHistoryArea('kickboxing')}
+        >
+          Kickboxing
+        </button>
       </div>
 
       {/* Display grouped by exercise */}
@@ -91,8 +97,13 @@ export function HistoryMode({
                 <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded flex justify-between items-start gap-2'>
                   <div className="flex-1">
                     <span>{entry.dateDone.toLocaleDateString()}: </span>
-                    {entry.weight && <span>{entry.weight}kg x {entry.numOfWeights} </span>}
-                    <span>{entry.sets} sets x {entry.reps} reps</span>
+                    {/* hide reps and sets if kickboxing */}
+                    {entry.area !== "kickboxing" && (
+                      <>
+                        {entry.weight && <span>{entry.weight}kg x {entry.numOfWeights} </span>}
+                        <span>{entry.sets} sets x {entry.reps} reps</span>
+                      </>
+                    )}  
                     {entry.note && <span className='text-gray-600'> - {entry.note}</span>}
                   </div>
                   {/* Edit and Delete buttons */}

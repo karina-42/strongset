@@ -64,83 +64,112 @@ export function DraftEntryForm({
           }
         />
       </div>
-      
-      {/* weight in kg and number of weights*/}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="space-y-2">
-          <label className="text-sm text-gray-600">Weight:</label>
-          <div className="flex items-center gap-2">
-            <input 
-              className="w-16 border rounded-lg p-2 text-center"
-              type="number" 
-              value={value.weight ?? ""}
-              onChange={(e) =>
-                onChange({
-                  ...value,
-                  weight: e.target.value === "" ? null : Number(e.target.value)
-                })
-              }
-              />
-              <span className="text-gray-600">kg x</span>
+      {/* weight in kg and number of weights, reps and sets*/}
+      {value.area !== "kickboxing" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <label className="text-sm text-gray-600">Weight:</label>
+              <div className="flex items-center gap-2">
+                <input
+                  className="w-16 border rounded-lg p-2 text-center"
+                  type="number"
+                  value={value.weight ?? ""}
+                  onChange={(e) =>
+                    onChange({
+                      ...value,
+                      weight: e.target.value === "" ? null : Number(e.target.value)
+                    })
+                  }
+                  />
+                  <span className="text-gray-600">kg x</span>
+              </div>
+            </div>
+            <div>
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Number of weights:</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    className="w-16 border rounded-lg p-2 text-center"
+                    type="number"
+                    value={value.numOfWeights ?? ""}
+                    onChange={(e) =>
+                      onChange({
+                        ...value,
+                        numOfWeights: e.target.value === "" ? null : Number(e.target.value)
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </div> 
-        <div>
-          <div className="space-y-2">
-            <label className="text-sm text-gray-600">Number of weights:</label>
-            <div className="flex items-center gap-2">
-              <input
-                className="w-16 border rounded-lg p-2 text-center"
-                type="number"
-                value={value.numOfWeights ?? ""}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <label className="text-sm text-gray-600">Reps:</label>
+              <div className="flex items-center gap-2">
+                <input
+                  className="w-16 border rounded-lg p-2 text-center"
+                  type="number"
+                  value={value.reps ?? ""}
+                  onChange={(e) =>
+                    onChange({
+                      ...value,
+                      reps: e.target.value === "" ? null : Number(e.target.value)
+                    })
+                  }
+                />
+                <span className="text-gray-600">reps x</span>
+              </div>
+            </div>
+          {/* sets */}
+            <div className="space-y-2">
+              <label className="text-sm text-gray-600">Sets:</label>
+              <div className="flex items-center gap-2">
+                <input
+                  className="w-16 border rounded-lg p-2 text-center"
+                  type="number"
+                  value={value.sets}
+                  onChange={(e) =>
+                    onChange({
+                      ...value,
+                      sets: Number(e.target.value)
+                    })
+                  }
+                />
+                <span className="text-gray-600">sets</span>
+              </div>
+            </div>
+          {/* rest time */}
+            <div>
+              <label className="text-sm text-gray-600">Rest Time:</label>
+              <input 
+                className="w-25 border rounded-lg p-2"
+                type="number" 
+                value={value.restMin}
                 onChange={(e) =>
                   onChange({
                     ...value,
-                    numOfWeights: e.target.value === "" ? null : Number(e.target.value)
+                    restMin: Number(e.target.value)
+                  })
+                }
+              />:
+              <input 
+                className="w-25 border rounded-lg p-2"
+                type="number" 
+                value={value.restSec}
+                onChange={(e) =>
+                  onChange({
+                    ...value,
+                    restSec: Number(e.target.value)
                   })
                 }
               />
             </div>
           </div>
-        </div>       
-      </div>
+        </div>
+      )}
 
-      {/* reps and sets*/}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="space-y-2">
-          <label className="text-sm text-gray-600">Reps:</label>
-          <div className="flex items-center gap-2">
-            <input 
-              className="w-16 border rounded-lg p-2 text-center"
-              type="number" 
-              value={value.reps ?? ""}
-              onChange={(e) =>
-                onChange({
-                  ...value,
-                  reps: e.target.value === "" ? null : Number(e.target.value)
-                })
-              }
-            />
-            <span className="text-gray-600">reps x</span>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm text-gray-600">Sets:</label>
-          <div className="flex items-center gap-2">
-            <input 
-              className="w-16 border rounded-lg p-2 text-center"
-              type="number" 
-              value={value.sets}
-              onChange={(e) =>
-                onChange({
-                  ...value,
-                  sets: Number(e.target.value)
-                })
-              }
-            /> 
-            <span className="text-gray-600">sets</span>
-          </div>
-        </div>
-      </div>
 
       {/* Note */}
       <div>
@@ -158,39 +187,12 @@ export function DraftEntryForm({
           }
         />
       </div>
-
-      {/* rest time */}
-      <div>
-        <label className="text-sm text-gray-600">Rest Time:</label>
-        <input 
-          className="w-25 border rounded-lg p-2"
-          type="number" 
-          value={value.restMin}
-          onChange={(e) =>
-            onChange({
-              ...value,
-              restMin: Number(e.target.value)
-            })
-          }
-        />:
-        <input 
-          className="w-25 border rounded-lg p-2"
-          type="number" 
-          value={value.restSec}
-          onChange={(e) =>
-            onChange({
-              ...value,
-              restSec: Number(e.target.value)
-            })
-          }
-        />
-      </div>
       
       {/* body area */}
       <fieldset className="border rounded-lg p-3">
         <legend className="text-sm font-medium text-gray-700 px-2">Body area</legend>
         <div className="flex gap-4">
-          {(["upper", "lower", "full"] as const).map(area => (
+          {(["upper", "lower", "full", "kickboxing"] as const).map(area => (
             <label key={area} className="flex items-center gap-2">
               <input
                 type="radio"

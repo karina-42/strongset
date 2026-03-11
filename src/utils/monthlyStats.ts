@@ -14,19 +14,32 @@ export function calculateMonthlyStats(
       date.getFullYear() === currentYear
     )
   })
-  const uniqueDays = new Set(
-    entriesThisMonth.map(entry =>
+  const gymEntriesThisMonth = entriesThisMonth.filter(e => e.area !== "kickboxing")
+  const kickboxingEntriesThisMonth = entriesThisMonth.filter(e => e.area === "kickboxing")
+
+  const gymUniqueDays = new Set(
+    gymEntriesThisMonth.map(entry =>
       entry.dateDone.toDateString()
     )
   )
-  const visitCount = uniqueDays.size
+  const kickboxingUniqueDays = new Set(
+    kickboxingEntriesThisMonth.map(entry =>
+      entry.dateDone.toDateString()
+    )
+  )
+
+  const gymVisitCount = gymUniqueDays.size
+  const kickboxingVisitCount = kickboxingUniqueDays.size
+  const totalVisits = gymVisitCount + kickboxingVisitCount
+  
   const costPerVisit = 
-    visitCount > 0 
-    ? Math.round(monthlyFee / visitCount)
+    totalVisits > 0 
+    ? Math.round(monthlyFee / totalVisits)
     : null
 
   return {
-    visitCount,
+    gymVisitCount,
+    kickboxingVisitCount,
     costPerVisit
   }
 

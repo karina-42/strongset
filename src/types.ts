@@ -12,7 +12,7 @@ export type Workout = {
 export interface Exercise {
   name: string;
   id: string;
-  area: "upper" | "lower" | "full";
+  area: "upper" | "lower" | "full" | "kickboxing";
 }
 
 // Model for an entry of a workout
@@ -35,7 +35,7 @@ export interface WorkoutEntry {
   restSec: number;
   note?: string;
   dateDone: Date;
-  area: "upper" | "lower" | "full";
+  area: "upper" | "lower" | "full" | "kickboxing";
 }
 
 // Display type to display the name of the exercise in 
@@ -46,7 +46,7 @@ export type TodayEntryDisplay = WorkoutEntry & {
 
 export type DraftEntryInput = {
   exerciseName: string;
-  area: "upper" | "lower" | "full";
+  area: "upper" | "lower" | "full" | "kickboxing";
   weight: number | null;
   numOfWeights: number | null;
   reps: number | null;

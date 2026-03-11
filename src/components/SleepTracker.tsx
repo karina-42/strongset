@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { SleepEntry } from "../types";
 
 interface SleepTrackerProps {
@@ -28,6 +28,8 @@ export function SleepTracker({
   useEffect(() => {
     setGoalInput(goalTime)
   }, [goalTime])
+
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   
   function convertTime(time: string) {
     const [hour, minutes] = time.split(":");
@@ -65,6 +67,18 @@ export function SleepTracker({
     return minutesUntilWakeUp
   }
  
+  function handlePressStart() {
+    longPressTimer.current = setTimeout(() => {
+      onAddEntry()
+    }, 500)
+  }
+
+  function handlePressEnd() {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+    }
+  }
+
   const sortedEntries = [...sleepEntries].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -132,7 +146,9 @@ export function SleepTracker({
       
       {/* Bed Button */}
       <button 
-        onClick={onAddEntry}
+        onPointerDown={handlePressStart}
+        onPointerUp={handlePressEnd}
+        onPointerLeave={handlePressEnd}
         className="w-full bg-emerald-700 text-white py-4 rounded-2xl font-bold text-lg active:bd-emerald-600 active:scale-95 transition-transform shadow-md cursor-pointer"
       >
         🌙 Phone down, Lights out

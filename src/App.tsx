@@ -614,16 +614,17 @@ function App() {
           </div>
           
           {/* Finish workout button */}
-          <div className={`mt-12 p-4 mx-3 mb-6 rounded-lg border-l-4 ${getVisitGradientClasses(monthlyStats.visitCount)}`}>
+          <div className={`mt-12 p-4 mx-3 mb-6 rounded-lg border-l-4 ${getVisitGradientClasses(monthlyStats.gymVisitCount + monthlyStats.kickboxingVisitCount)}`}>
             <button
               className={`w-full py-3 ${
-                monthlyStats.visitCount >= 12
+                monthlyStats.gymVisitCount + monthlyStats.kickboxingVisitCount >= 12
                 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900'
                 : 'bg-red-600 text-white'
               } rounded-xl font-semibold active:scale-95 shadow-lg cursor-pointer`} 
               onClick={() => {
                 if (confirm('Ready to be done?')) {
                 finishWorkout()
+                window.scrollTo({ top: 0, behavior: 'smooth' })
                 }
               }}
             >

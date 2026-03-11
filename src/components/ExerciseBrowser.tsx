@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Exercise, WorkoutEntry } from "../types";
 import { ExerciseList } from "./ExerciseList";
+import type { Equipment } from "../types";
 // diplays buttons, and list of filtered exercies
 // needs exercise list
 // creates a draft when an exercise is selected
@@ -11,7 +12,7 @@ interface ExerciseBrowserProps {
   onSelectExercise: (exercise: Exercise) => void;
 }
 
-type Filter = "all" | "upper" | "lower" | "full"
+type Filter = "all" | "upper" | "lower" | "full" | "kickboxing"
 
 
 
@@ -21,13 +22,21 @@ export function ExerciseBrowser({
   onSelectExercise
 }:  ExerciseBrowserProps) {
   const [filter, setFilter] = useState<Filter>("all")
+  const [equipmentFilter, setEquipmentFilter] = useState<Equipment | "all">("all")
+
   const getButtonClass = (buttonFilter: Filter) => {
     const isActive = filter === buttonFilter
     return `px-4 py-2 rounded cursor-pointer ${isActive ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`
   }
+
+  const getEquipmentButtonClass = (eq: Equipment | "all") => {
+    const isActive = equipmentFilter === eq
+    return `px-3 py-1 rounded cursor-pointer text-sm ${isActive ? 'bg-emerald-600 text-white' : 'bg-emerald-200 text-emerald-700'}`
+  }
   const filteredExercises = exercises.filter(ex => {
-    if (filter === "all") return true
-    return ex.area === filter
+    if (filter !== "all" && ex.area !== filter) return false
+    if (equipmentFilter !== "all" && ex.equipment !== equipmentFilter) return false
+    return true
   }).sort((a,b) => a.name.localeCompare(b.name))
 
   return (
@@ -48,7 +57,22 @@ export function ExerciseBrowser({
         <button type='button' name='upper' className={getButtonClass("upper")} onClick={() => setFilter("upper")}>Upper</button>
         <button type='button' name='lower' className={getButtonClass("lower")} onClick={() => setFilter("lower")}>Lower</button>
         <button type='button' name='full' className={getButtonClass("full")} onClick={() => setFilter("full")}>Full</button>
+        <button type='button' name='kickboxing' className={getButtonClass("kickboxing")} onClick={() => setFilter("kickboxing")}>Kickboxing</button>
       </div>
+
+      {filter !== "all" && (
+      <div className="flex gap-2 flex-wrap">
+        {(["all", "barbell", "dumbbell", "cable", "smith machine", "machine", "kettleball", "bodyweight", "band"] as const).map(eq => (
+          <button
+            key={eq}
+            onClick={() => setEquipmentFilter(eq)}
+            className={getEquipmentButtonClass(eq)}
+          >
+            {eq}
+          </button>
+        ))}
+      </div>
+      )}
 
       {/* Display  list of exercises */}
       <ExerciseList

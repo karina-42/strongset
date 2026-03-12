@@ -1,3 +1,4 @@
+import { useState } from "react"
 import type { DraftVideoWorkout } from "../types"
 
 type VideoFormProps = {
@@ -11,6 +12,7 @@ export function VideoForm({
   onChange,
   onSubmit
 }: VideoFormProps) {
+  const [tagsInput, setTagsInput] = useState(value.tags.join(", "))
   return (
     <div className="flex flex-col gap-2">
       <input
@@ -105,11 +107,11 @@ export function VideoForm({
 
       <input 
         placeholder="Tags (comma separated)"
-        value={value.tags.join(", ")}
-        onChange={ e => 
-          onChange({
+        value={tagsInput}
+        onChange={ e => setTagsInput(e.target.value)}
+        onBlur={e => onChange({
             ...value,
-            tags: e.target.value.split(",").map(t => t.trim()).filter(Boolean),
+            tags: e.target.value.split(",").map(t => t.trim()).filter(Boolean)
           })
         }
       />

@@ -15,7 +15,10 @@ export function MonthlyStatsHeader({
   monthlyStats
 }: MonthlyStatsHeaderProps) {
   const {gymVisitCount, kickboxingVisitCount, costPerVisit} = monthlyStats
-
+  const gymGoal = 12
+  const kickboxingGoal = 4
+  const kickboxingEmoji = kickboxingVisitCount >= kickboxingGoal ? '🥊' : ''
+  
   return (
     <div className="relative mx-3 mb-4 rounded-lg overflow-hidden">
       {/* progress indicator */}
@@ -30,9 +33,10 @@ export function MonthlyStatsHeader({
       {/* main content */}
       <div className={`pt-4 p-4 border border-3 ${getVisitGradientClasses(gymVisitCount+kickboxingVisitCount)} rounded-lg`}>
         <p className="text-sm font-medium">
-          {gymVisitCount >= 12 && '🏆 '}
+          {gymVisitCount >= gymGoal && kickboxingVisitCount >= kickboxingGoal && <span className="text-2xl">🏆</span>}
+          {gymVisitCount >= gymGoal && '🏋️'}
           {gymVisitCount >= 1 || kickboxingVisitCount >=1
-            ? `This month: ${gymVisitCount} gym, ${kickboxingVisitCount} kickboxing; ￥${costPerVisit?.toLocaleString()} per visit`
+            ? `This month: ${gymVisitCount} gym, ${kickboxingEmoji}${kickboxingVisitCount} kickboxing; ￥${costPerVisit?.toLocaleString()} per visit`
             : `No visits this month; you paid ￥${monthlyFee?.toLocaleString()} for nothing...`
           }
         </p>

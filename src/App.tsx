@@ -546,6 +546,27 @@ function App() {
     })
   }
 
+  async function handleEditVideo(updatedVideo: VideoWorkout) {
+    await fetch(`${API_URL}/videos/${updatedVideo.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedVideo)
+    })
+
+    setVideoWorkouts(prev =>
+      prev.map(v => v.id === updatedVideo.id ? updatedVideo : v)
+    )
+  }
+
+  async function handleDeleteVideo(id: string) {
+    if (!confirm("Delete this video?")) return
+
+    await fetch(`${API_URL}/videos/${id}`, {
+      method: "DELETE"
+    })
+
+    setVideoWorkouts(prev => prev.filter(v => v.id !== id))    
+  }
 /***************************************************/
 /***************************************************/
 /***************************************************/
@@ -723,6 +744,8 @@ function App() {
           {videoTab === "list" && (
             <VideoList
               videoWorkouts={videoWorkouts}
+              onEdit={handleEditVideo}
+              onDelete={handleDeleteVideo}
             />
           )}
           {videoTab === "add" && (

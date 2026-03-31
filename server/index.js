@@ -84,6 +84,16 @@ app.put("/settings", async (req, res) => {
   res.json({ success: true })
 })
 
+app.put("/videos/:id", async(req, res) => {
+  const { id } = req.params
+  const { _id, ...updateData } = req.body
+  await videos.updateOne(
+    { id: id },
+    { $set: updateData }
+  )
+  res.json({ success: true })
+})
+
 app.get("/videos", async (req, res) => {
   const allVideos = await videos.find().toArray()
   res.json(allVideos)
@@ -115,6 +125,12 @@ app.delete('/workouts/:id', async (req, res) => {
   const { id } = req.params
   // Delete from MongoDB
   await db.collection('workouts').deleteOne({ id: id })
+  res.json({ success: true })
+})
+
+app.delete("/videos/:id", async (req, res) => {
+  const { id } = req.params
+  await videos.deleteOne({ id: id})
   res.json({ success: true })
 })
 

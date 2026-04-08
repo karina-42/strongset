@@ -482,35 +482,56 @@ function App() {
   }
 
   // Handle adding a sleep entry
-  async function handleAddSleepEntry() {
-    const now = new Date()
-    const entryDate = new Date(now)
-    const hour = now.getHours().toString().padStart(2, '0')
-    const minutes = now.getMinutes().toString().padStart(2, '0')
-    const currentTime = `${hour}:${minutes}`
-    const isAfterMidnight = now.getHours() < 4
+  async function handleAddSleepEntry(manualData?: { date: string; bedtime: string; metGoal: boolean }) {
+    let sleepEntry: SleepEntry;
 
-    if (isAfterMidnight) {
-      entryDate.setDate(entryDate.getDate() - 1)
-    }
+    if (manualData) {
+      //If coming from the "Log Missed Night" form
+      sleepEntry = {
+        id: crypto.randomUUID(),
+        date: new Date(manualData.date),
+        bedtime: manualData.bedtime,
+        goalTime: sleepGoalTime,
+        metGoal: manualData.metGoal,
+      };
+    } else {
+      const now = new Date()
+      const entryDate = new Date(now)
+      const hour = now.getHours().toString().padStart(2, '0')
+      const minutes = now.getMinutes().toString().padStart(2, '0')
+      const currentTime = `${hour}:${minutes}`
+      const isAfterMidnight = now.getHours() < 4 
+      
+      if (isAfterMidnight) {
+        entryDate.setDate(entryDate.getDate() - 1)
+      }
 
-    const metGoal = isAfterMidnight ? false : currentTime <= sleepGoalTime
+      const metGoal = isAfterMidnight ? false : currentTime <= sleepGoalTime
 
-    const sleepEntry: SleepEntry = {
-      id: crypto.randomUUID(),
-      date: entryDate,
-      bedtime: currentTime,
-      goalTime: sleepGoalTime,
-      metGoal: metGoal,
+      sleepEntry = {
+        id: crypto.randomUUID(),
+        date: entryDate,
+        bedtime: currentTime,
+        goalTime: sleepGoalTime,
+        metGoal: metGoal,
+      };
     }
 
     setSleepEntries(prev => [...prev, sleepEntry])
 
-    await fetch(`${API_URL}/sleep`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(sleepEntry),
-    })
+    try {
+      const response = await fetch(`${API_URL}/sleep`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sleepEntry),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Failed to save sleep entry:", error);
+    }
   }
 
   async function handleBedTimeGoal(newGoal: string) {

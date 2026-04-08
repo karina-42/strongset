@@ -4,7 +4,7 @@ import type { SleepEntry } from "../types";
 interface SleepTrackerProps {
   sleepEntries: SleepEntry[];
   goalTime: string;
-  onAddEntry:  () => void;
+  onAddEntry:  (manualData?: { date: string; bedtime: string; metGoal: boolean }) => void;
   onSetGoalTime: (goalTime: string) => void;
 }
 
@@ -17,6 +17,16 @@ export function SleepTracker({
   const [currentTime, setCurrentTime] = useState(new Date())
   const [editingGoal, setEditingGoal] = useState(false);
   const [goalInput, setGoalInput] = useState(goalTime);
+
+  //State for manual logging
+  const [showManualLog, setShowManualLog] = useState(false);
+  const [manualDate, setManualDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().split('T')[0];
+  });
+
+  const [manualTime, setManualTime] = useState("23:15");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,6 +41,24 @@ export function SleepTracker({
 
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   
+  // helper to check if goal was met
+  function checkMetGoal(bedtime: string, goal: string) {
+    return bedtime <= goal;
+  }
+
+  function handleManualSubmit() {
+    // create ISO string for date at selected bedtime
+    const entryDate = new Date(`${manualDate}T${manualTime}:00Z`).toISOString();
+    
+    onAddEntry({
+      date: entryDate,
+      bedtime: manualTime,
+      metGoal: checkMetGoal(manualTime,goalTime)
+    });
+
+    setShowManualLog(false);
+  }
+
   function convertTime(time: string) {
     const [hour, minutes] = time.split(":");
     let numHour = parseInt(hour);
@@ -153,6 +181,43 @@ export function SleepTracker({
       >
         🌙 Phone down, Lights out
       </button>
+
+      {/* Manual Entry Toggle */}
+      <div className="text-center">
+        <button 
+          onClick={() => setShowManualLog(!showManualLog)}
+          className="text-gray-400 text-xs hover:text-white transition-colors"
+        >
+          {showManualLog ? "Close Manual Log" : "Forgot to press last night?"}
+        </button>
+      </div>
+
+      {/* Manual Entry Form */}
+      {showManualLog && (
+        <div className="bg-gray-800 p-4 rounded-2xl border border-gray-700 space-y-3">
+          <h3 className="text-white text-sm font-bold">Log Missed Night</h3>
+          <div className="flex gap-2">
+            <input 
+              type="date" 
+              value={manualDate} 
+              onChange={(e) => setManualDate(e.target.value)}
+              className="flex-1 bg-gray-700 text-white text-sm p-2 rounded-lg border border-gray-600"
+            />
+            <input 
+              type="time" 
+              value={manualTime} 
+              onChange={(e) => setManualTime(e.target.value)}
+              className="w-24 bg-gray-700 text-white text-sm p-2 rounded-lg border border-gray-600"
+            />
+          </div>
+          <button 
+            onClick={handleManualSubmit}
+            className="w-full bg-purple-600 text-white py-2 rounded-xl text-sm font-bold active:bg-purple-700"
+          >
+            Add To History
+          </button>
+        </div>
+      )}
 
       {/* History, Recent Nights */}
       <div className="bg-blue-900 rounded-2xl p-4 shadow-sm space-y-2">

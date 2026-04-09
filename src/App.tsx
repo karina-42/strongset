@@ -627,25 +627,25 @@ function App() {
           // mode === "gym" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
           getTabColors("gym", mode)
         }`} onClick={() => setMode("gym")}>
-          Gym
+          🏋️‍♀️Gym
         </button>
         <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
           //mode === "history" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
           getTabColors("history", mode)
         }`} onClick={() => setMode("history")}>
-          History
+          📝History
         </button>
         <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
           //mode === "video" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
           getTabColors("video", mode)
         }`} onClick={() => setMode("video")}>
-          Video
+          🎦Video
         </button>
         <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
           //mode === "sleep" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
           getTabColors("sleep", mode)
         }`} onClick={() => setMode("sleep")}>
-          Sleep
+          🛏️Sleep
         </button>
       </div>
 

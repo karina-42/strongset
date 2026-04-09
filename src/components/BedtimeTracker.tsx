@@ -1,19 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import type { SleepEntry } from "../types";
 
-interface SleepTrackerProps {
+interface BedtimeTrackerProps {
   sleepEntries: SleepEntry[];
   goalTime: string;
   onAddEntry:  (manualData?: { date: string; bedtime: string; metGoal: boolean }) => void;
   onSetGoalTime: (goalTime: string) => void;
 }
 
-export function SleepTracker({
+export function BedtimeTracker({
   sleepEntries,
   goalTime,
   onAddEntry,
   onSetGoalTime,
-}: SleepTrackerProps) {
+}: BedtimeTrackerProps) {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [editingGoal, setEditingGoal] = useState(false);
   const [goalInput, setGoalInput] = useState(goalTime);

@@ -17,7 +17,7 @@ import { ExerciseBrowser } from './components/ExerciseBrowser'
 import { HistoryMode } from './components/HistoryMode'
 import { calculateMonthlyStats } from './utils/monthlyStats'
 import { VideoForm } from './components/VideoForm'
-import { SleepTracker } from './components/SleepTracker'
+import { BedtimeTracker } from './components/BedtimeTracker'
 import { VideoList } from './components/VideoList'
 import { getVisitGradientClasses } from './utils/visitColors'
 import './App.css'
@@ -717,7 +717,7 @@ function App() {
       {/* Sleep Tracker */}
       {mode === "sleep" && (
         <>
-          <SleepTracker
+          <BedtimeTracker
           sleepEntries={sleepEntries}
           goalTime={sleepGoalTime}
           onAddEntry={handleAddSleepEntry}

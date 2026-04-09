@@ -636,16 +636,16 @@ function App() {
           History
         </button>
         <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
-          //mode === "sleep" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
-          getTabColors("sleep", mode)
-        }`} onClick={() => setMode("sleep")}>
-          Sleep
-        </button>
-        <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
           //mode === "video" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
           getTabColors("video", mode)
         }`} onClick={() => setMode("video")}>
           Video
+        </button>
+        <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
+          //mode === "sleep" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          getTabColors("sleep", mode)
+        }`} onClick={() => setMode("sleep")}>
+          Sleep
         </button>
       </div>
 
@@ -714,18 +714,6 @@ function App() {
       </>
       )}
 
-      {/* Sleep Tracker */}
-      {mode === "sleep" && (
-        <>
-          <BedtimeTracker
-          sleepEntries={sleepEntries}
-          goalTime={sleepGoalTime}
-          onAddEntry={handleAddSleepEntry}
-          onSetGoalTime={handleBedTimeGoal}
-          />
-        </>
-      )}
-
       {/* Video tab */}
       {mode === "video" && (
         <div className='p-4 space-y-4'>
@@ -780,6 +768,18 @@ function App() {
           {videoTab === "edit" && <div> Edit video UI goes here</div>}
           </div>
         </div>
+      )}
+
+      {/* Bedtime Tracker */}
+      {mode === "sleep" && (
+        <>
+          <BedtimeTracker
+          sleepEntries={sleepEntries}
+          goalTime={sleepGoalTime}
+          onAddEntry={handleAddSleepEntry}
+          onSetGoalTime={handleBedTimeGoal}
+          />
+        </>
       )}
     </div>
   )

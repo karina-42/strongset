@@ -20,6 +20,7 @@ import { VideoForm } from './components/VideoForm'
 import { BedtimeTracker } from './components/BedtimeTracker'
 import { VideoList } from './components/VideoList'
 import { getVisitGradientClasses } from './utils/visitColors'
+import { WorkoutCalendar } from './components/WorkoutCalendar'
 import './App.css'
 import { getTabColors } from './utils/tabColors'
 import { calculateSleepCount } from './utils/sleepUtils'
@@ -643,6 +644,12 @@ function App() {
         </button>
         <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
           //mode === "sleep" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
+          getTabColors("calendar", mode)
+        }`} onClick={() => setMode('calendar')}>
+          📅Calendar
+        </button>
+        <button className={`flex-1 py-2 rounded-md transition-colors cursor-pointer ${
+          //mode === "sleep" ? "bg-emerald-600 text-white shadow-sm" : "bg-transparent text-emerald-700"
           getTabColors("sleep", mode)
         }`} onClick={() => setMode("sleep")}>
           🛏️Sleep
@@ -768,6 +775,14 @@ function App() {
           {videoTab === "edit" && <div> Edit video UI goes here</div>}
           </div>
         </div>
+      )}
+
+      {/* Calendar tab */}
+      {mode === 'calendar' && (
+        <WorkoutCalendar
+          workoutHistory={workoutHistory}
+          exercises={exercises}
+        />
       )}
 
       {/* Bedtime Tracker */}

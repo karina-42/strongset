@@ -60,7 +60,7 @@ export type DraftEntryInput = {
 
 export type Equipment = "barbell" | "dumbbell" | "cable" | "smith machine" | "machine" | "bodyweight" | "band" | "kettleball";
 
-export type AppMode = "gym" | "video" | "sleep" | "history";
+export type AppMode = "gym" | "video" | "sleep" | "history" | "calendar";
 
 export type VideoTab = "add" | "list" | "search" | "edit";
 

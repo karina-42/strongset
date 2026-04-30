@@ -48,7 +48,7 @@ export function BedtimeTracker({
 
   function handleManualSubmit() {
     // create ISO string for date at selected bedtime
-    const entryDate = new Date(`${manualDate}T${manualTime}:00Z`).toISOString();
+    const entryDate = new Date(`${manualDate}T${manualTime}:00`).toISOString();
     
     onAddEntry({
       date: entryDate,
@@ -112,6 +112,24 @@ export function BedtimeTracker({
   );
   
   const mins = minutesUntilWakeUp()
+
+  function getBedtimeStatus(bedtime: string, goalTime: string) {
+    const [bH, bM] = bedtime.split(':').map(Number);
+    const [gH, gM] = goalTime.split(':').map(Number);
+
+    let bedMins = bH * 60 + bM;
+    const goalMins = gH * 60 + gM;
+
+    // if bedtime is after midnight before 4am, treat as next day
+    if (bH < 4) bedMins += 24 * 60;
+
+    const diff = bedMins - goalMins;
+
+    if (diff <= 0) return { card: 'bg-emerald-900 border border-emerald-700', text: 'text-emerald-400', label: '✅ Met'}
+    if (diff <= 15) return { card: 'bg-yellow-800 border border-yellow-600', text: 'text-yellow-300', label: '🟡 Close'}
+    if (diff <= 30) return { card: 'bg-orange-800 border border-orange-600', text: 'text-orange-300', label: '🟠 Late'}
+    return { card: 'bg-red-900 border border-red-700', text: 'text-red-400', label: '❌ Missed'}
+  }
 
   return (
     <div className="space-y-4 p-4">
@@ -225,29 +243,30 @@ export function BedtimeTracker({
         {sortedEntries.length === 0 && (
           <p className="text-gray-400 text-sm text-center py-4">No entries yet - hit that button tonight!</p>
         )}
-        {sortedEntries.map((entry) => (
-          <div 
-            key={entry.id}
-            className={`flex items-center justify-between rounded-xl px-4 py-3 ${
-              entry.metGoal ? "bg-emerald-900 border border-emerald-700" : "bg-red-900 border border-red-700"
-            }`}
-          >
-            <div>
-              <p className="text-sm font-semibold text-white">
-                {new Date(entry.date).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric"})}
-              </p>
-              <p className="text-xs text-gray-400">
-                Goal: {convertTime(entry.goalTime)}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className={`text-lg font-bold ${entry.metGoal ? "text-emerald-600" : "text-red-600"}`}>
-                {convertTime(entry.bedtime)}
-              </p>
-              <p className="text-sm">{entry.metGoal ? "✅ Met" : "❌ Missed"}</p>
-            </div>
-          </div> 
-        ))}
+        {sortedEntries.map((entry) => {
+          const status = getBedtimeStatus(entry.bedtime, entry.goalTime);
+          return (
+            <div 
+              key={entry.id}
+              className={`flex items-center justify-between rounded-xl px-4 py-3 ${status.card}`}
+            >
+              <div>
+                <p className="text-sm font-semibold text-white">
+                  {new Date(entry.date).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric"})}
+                </p>
+                <p className="text-xs text-gray-400">
+                  Goal: {convertTime(entry.goalTime)}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className={`text-lg font-bold ${status.text}`}>
+                  {convertTime(entry.bedtime)}
+                </p>
+                <p className="text-sm">{status.label}</p>
+              </div>
+            </div> 
+          )
+        })}
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ import { calculateMonthlyStats } from './utils/monthlyStats'
 import { VideoForm } from './components/VideoForm'
 import { BedtimeTracker } from './components/BedtimeTracker'
 import { VideoList } from './components/VideoList'
-import { getVisitGradientClasses } from './utils/visitColors'
+import { getPaceGradientClasses } from './utils/visitColors'
 import { WorkoutCalendar } from './components/WorkoutCalendar'
 import './App.css'
 import { getTabColors } from './utils/tabColors'
@@ -688,10 +688,10 @@ function App() {
           </div>
           
           {/* Finish workout button */}
-          <div className={`mt-12 p-4 mx-3 mb-6 rounded-lg border-l-4 ${getVisitGradientClasses(monthlyStats.gymVisitCount + monthlyStats.kickboxingVisitCount)}`}>
+          <div className={`mt-12 p-4 mx-3 mb-6 rounded-lg border-l-4 ${getPaceGradientClasses(monthlyStats.gymVisitsAheadOfPace, monthlyStats.hasMetGymGoal)}`}>
             <button
               className={`w-full py-3 ${
-                monthlyStats.gymVisitCount + monthlyStats.kickboxingVisitCount >= 12
+                monthlyStats.hasMetGymGoal
                 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900'
                 : 'bg-red-600 text-white'
               } rounded-xl font-semibold active:scale-95 shadow-lg cursor-pointer`} 

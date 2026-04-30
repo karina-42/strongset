@@ -37,10 +37,20 @@ export function calculateMonthlyStats(
     ? Math.round(monthlyFee / totalVisits)
     : null
 
+  const gymGoal = 12;
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const dayOfMonth = now.getDate();
+  const expectedGymVisits = Math.floor((dayOfMonth / daysInMonth) * gymGoal);
+  const gymVisitsAheadOfPace = gymVisitCount - expectedGymVisits;
+  const hasMetGymGoal = gymVisitCount >= gymGoal;
+
   return {
     gymVisitCount,
     kickboxingVisitCount,
-    costPerVisit
+    costPerVisit,
+    expectedGymVisits,
+    gymVisitsAheadOfPace,
+    hasMetGymGoal
   }
 
 }

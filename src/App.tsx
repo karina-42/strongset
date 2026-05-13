@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import strongsetLogo from './assets/StrongSet_Logo.png'
-import type { Exercise, WorkoutEntry } from './types'
+import type { CalendarNote, Exercise, WorkoutEntry } from './types'
 import type { TodayEntryDisplay } from './types'
 import type { DraftEntryInput } from './types'
 import type { VideoWorkout } from './db/models/VideoWorkout'
@@ -73,6 +73,7 @@ function App() {
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
   const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
   const [sleepGoalTime, setSleepGoalTime] = useState<string>("23:45")
+  const [calendarNotes, setCalendarNotes] = useState<CalendarNote[]>([])
 
   // To display the last done date
   const lastDoneDate = (() => {
@@ -433,6 +434,12 @@ function App() {
     )
   }, [])
 
+  useEffect(() => {
+    fetch(`${API_URL}/calendar-notes`)
+    .then(r => r.json())
+    .then((data: CalendarNote[]) => setCalendarNotes(data))
+  }, [])
+
   // handle deleting an entry from Today's Entries
   const handleDeleteEntry = (entryId: string) => {
     setTodayEntries(prev => prev.filter(entry => entry.id !== entryId))
@@ -589,6 +596,34 @@ function App() {
 
     setVideoWorkouts(prev => prev.filter(v => v.id !== id))    
   }
+
+  // function to add a calendar note
+async function handleAddCalendarNote(date: string, text: string) {
+  const note: CalendarNote = {
+    id: crypto.randomUUID(),
+    date,
+    text,
+    createdAt: new Date()
+  };
+  await fetch(`${API_URL}/calendar-notes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(note)
+  });
+  setCalendarNotes(prev => [...prev, note]);
+}
+
+// function to delete a calendar note
+async function handleDeleteCalendarNote(id: string) {
+  if (!confirm("Delete this note?")) return
+
+    await fetch(`${API_URL}/calendar-notes/${id}`, {
+      method: "DELETE"
+    })
+
+    setCalendarNotes(prev => prev.filter(n => n.id !== id))    
+}
+
 /***************************************************/
 /***************************************************/
 /***************************************************/
@@ -782,6 +817,9 @@ function App() {
         <WorkoutCalendar
           workoutHistory={workoutHistory}
           exercises={exercises}
+          calendarNotes={calendarNotes}
+          onAddNote={handleAddCalendarNote}
+          onDeleteNote={handleDeleteCalendarNote}
         />
       )}
 

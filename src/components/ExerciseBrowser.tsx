@@ -62,7 +62,7 @@ export function ExerciseBrowser({
 
       {filter !== "all" && (
       <div className="flex gap-2 flex-wrap">
-        {(["all", "barbell", "dumbbell", "cable", "smith machine", "machine", "kettleball", "bodyweight", "band"] as const).map(eq => (
+        {(["all", "balance ball", "band", "barbell", "bodyweight", "cable", "dumbbell", "kettlebell", "machine", "smith machine"] as const).map(eq => (
           <button
             key={eq}
             onClick={() => setEquipmentFilter(eq)}

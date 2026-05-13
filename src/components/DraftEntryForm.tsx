@@ -217,7 +217,7 @@ export function DraftEntryForm({
       <fieldset className="border rounded-lg p-3">
         <legend className="text-sm font-medium text-gray-700 px-2">Equipment used</legend>
         <div className="flex flex-wrap gap-2">
-          {(["barbell", "dumbbell", "cable", "smith machine", "machine", "bodyweight", "band"] as const).map(equipment => (
+          {(["balance ball", "band", "barbell", "bodyweight", "cable", "dumbbell", "kettlebell", "machine", "smith machine"] as const).map(equipment => (
             <label key={equipment} className="flex items-center gap-2">
               <input
                 type="radio"

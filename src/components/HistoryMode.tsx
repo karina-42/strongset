@@ -50,7 +50,7 @@ export function HistoryMode({
             <div key={exercise.id} className="bg-gray-300 rounded-xl p3">
               <p className="font-semibold text-sm mb-2">{exercise.name}</p>
               <div className="flex flex-wrap gap-1">
-                {(["barbell", "dumbbell", "cable", "smith machine", "machine", "kettleball", "bodyweight", "band"] as const).map(eq =>(
+                {(["balance ball", "band", "barbell", "bodyweight", "cable", "dumbbell", "kettlebell", "machine", "smith machine"] as const).map(eq =>(
                   <button
                     key={eq}
                     onClick={() => onUpdateExercise(exercise.id, eq, undefined)}

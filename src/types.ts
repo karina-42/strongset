@@ -58,7 +58,7 @@ export type DraftEntryInput = {
   equipment?: Equipment;
 }
 
-export type Equipment = "barbell" | "dumbbell" | "cable" | "smith machine" | "machine" | "bodyweight" | "band" | "kettleball";
+export type Equipment = "barbell" | "dumbbell" | "cable" | "smith machine" | "machine" | "bodyweight" | "band" | "kettlebell" | "balance ball";
 
 export type AppMode = "gym" | "video" | "sleep" | "history" | "calendar";
 
@@ -80,4 +80,11 @@ export type SleepEntry = {
   bedtime: string;
   goalTime: string;
   metGoal: boolean;
+}
+
+export type CalendarNote = {
+  id: string
+  date: string
+  text: string
+  createdAt: Date
 }

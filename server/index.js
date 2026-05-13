@@ -17,6 +17,7 @@ const workouts = db.collection("workouts")
 const exercises = db.collection("exercises")
 const sleepEntries = db.collection("sleep")
 const settings = db.collection("settings")
+const calendarNotes = db.collection("calendarNotes")
 
 app.post("/videos", async (req, res) => {
   const video = {
@@ -49,6 +50,18 @@ app.post("/sleep", async (req, res) => {
   await sleepEntries.insertOne(req.body)
   res.json({ success: true, entry: req.body })
 })
+
+app.post("/calendar-notes", async (req, res) => {
+  const { date, text, id } = req.body;
+  const note = {
+    id,
+    date,
+    text,
+    createdAt: new Date()
+  };
+  await db.collection('calendarNotes').insertOne(note);
+  res.json(note);
+});
 
 app.put("/workouts/:id", async (req, res) => {
   const { id } = req.params
@@ -121,6 +134,11 @@ app.get("/sleep", async (req, res) => {
   res.json(bedGoalTime)
  })
 
+ app.get("/calendar-notes", async (req, res) => {
+  const notes = await db.collection('calendarNotes').find({}).toArray();
+  res.json(notes);
+ });
+
 app.delete('/workouts/:id', async (req, res) => {
   const { id } = req.params
   // Delete from MongoDB
@@ -133,6 +151,11 @@ app.delete("/videos/:id", async (req, res) => {
   await videos.deleteOne({ id: id})
   res.json({ success: true })
 })
+
+app.delete("/calendar-notes/:id", async (req, res) => {
+  await db.collection('calendarNotes').deleteOne({ id: req.params.id });
+  res.json({success: true});
+});
 
 app.listen(port, () => {
   console.log(`Server runnning on port ${port}`)

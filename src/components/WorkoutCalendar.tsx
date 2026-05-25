@@ -1,15 +1,22 @@
 import { useState, useMemo } from "react";
-import type { WorkoutEntry, Exercise, CalendarNote } from "../types";
+import type { WorkoutEntry, Exercise, CalendarNote, MonthOverride } from "../types";
+import { calculateStreak, getLastMonthStats } from "../utils/streakUtils";
 
 interface WorkoutCalendarProps {
   workoutHistory: WorkoutEntry[];
   exercises: Exercise[];
   calendarNotes: CalendarNote[];
+  monthOverrides: MonthOverride[];
+  monthlyStats: {
+    gymVisitCount: number
+    gymVisitsAheadOfPace: number
+    hasMetGymGoal: boolean
+  }
   onAddNote: (date: string, text: string) => void
   onDeleteNote: (id: string) => void
 }
 
-export function WorkoutCalendar({ workoutHistory, exercises, calendarNotes, onAddNote, onDeleteNote }: WorkoutCalendarProps) {
+export function WorkoutCalendar({ workoutHistory, exercises, calendarNotes, monthOverrides, monthlyStats, onAddNote, onDeleteNote }: WorkoutCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [noteInput, setNoteInput] = useState('')
@@ -71,10 +78,26 @@ export function WorkoutCalendar({ workoutHistory, exercises, calendarNotes, onAd
     return days;
   }, [currentMonth]);
 
+  const streak = calculateStreak(workoutHistory, monthOverrides)
+  const lastMonth = getLastMonthStats(workoutHistory)
+
+
+  const currentWeek = Math.floor(new Date().getDate() / 7)
+  const isOnPace = monthlyStats.gymVisitsAheadOfPace >= 0 || monthlyStats.hasMetGymGoal
+
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-3xl font-bold text-purple-700">Calendar</h1>
 
+      {streak > 0 ? (
+        <div className="bg-orange-50 border border-orange-300 rounded-xl px-4 py-3 text-sm font-medium text-orange-800">
+          🔥{streak} month{streak > 1 ? 's' : ''}{isOnPace ? `, ${currentWeek} week${currentWeek > 1 ? 's' : ''}` : ''} - keep it up!
+          </div>
+      ) : (
+        <div className="bg-gray-50 border border-gry-200 rounded-xl px-4 py-3 text-sm text-gray-600">
+          Last month: {lastMonth.gymVisits} gym, {lastMonth.kickboxingVisits} kickboxing
+          </div>
+      )}
       {/* Month navigation */}
       <div className="flex items-center justify-between">
         <button

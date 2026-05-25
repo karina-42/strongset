@@ -88,3 +88,9 @@ export type CalendarNote = {
   text: string
   createdAt: Date
 }
+
+export type MonthOverride = {
+  id: string
+  yearMonth: string
+  note?: string
+}

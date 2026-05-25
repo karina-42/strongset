@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import strongsetLogo from './assets/StrongSet_Logo.png'
-import type { CalendarNote, Exercise, WorkoutEntry } from './types'
+import { type MonthOverride, type CalendarNote, type Exercise, type WorkoutEntry } from './types'
 import type { TodayEntryDisplay } from './types'
 import type { DraftEntryInput } from './types'
 import type { VideoWorkout } from './db/models/VideoWorkout'
@@ -74,6 +74,10 @@ function App() {
   const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
   const [sleepGoalTime, setSleepGoalTime] = useState<string>("23:45")
   const [calendarNotes, setCalendarNotes] = useState<CalendarNote[]>([])
+  //hardcode for month override but make it CRUD later
+  const [monthOverrides] = useState<MonthOverride[]>([
+    { id: '1', yearMonth: '2026-03', note: 'difficult month' }
+  ])
 
   // To display the last done date
   const lastDoneDate = (() => {
@@ -818,6 +822,8 @@ async function handleDeleteCalendarNote(id: string) {
           workoutHistory={workoutHistory}
           exercises={exercises}
           calendarNotes={calendarNotes}
+          monthOverrides={monthOverrides}
+          monthlyStats={monthlyStats}
           onAddNote={handleAddCalendarNote}
           onDeleteNote={handleDeleteCalendarNote}
         />

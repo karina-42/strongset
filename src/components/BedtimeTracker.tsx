@@ -131,6 +131,13 @@ export function BedtimeTracker({
     return { card: 'bg-red-900 border border-red-700', text: 'text-red-400', label: '❌ Missed'}
   }
 
+  function getBedtimeMins(bedtime: string) {
+    const [h, m] = bedtime.split(':').map(Number);
+    let mins = h * 60 + m;
+    if (h < 4) mins += 24 * 60;
+    return mins;
+  }
+
   return (
     <div className="space-y-4 p-4">
       <h1 className="text-3xl font-bold text-purple-700">Bedtime Tracker</h1>
@@ -243,8 +250,19 @@ export function BedtimeTracker({
         {sortedEntries.length === 0 && (
           <p className="text-gray-400 text-sm text-center py-4">No entries yet - hit that button tonight!</p>
         )}
-        {sortedEntries.map((entry) => {
+        {sortedEntries.map((entry, i) => {
           const status = getBedtimeStatus(entry.bedtime, entry.goalTime);
+          const prev = sortedEntries[i + 1];
+          const prevMins = prev ? getBedtimeMins(prev.bedtime) : null;
+          const entryMins = getBedtimeMins(entry.bedtime);
+
+          let trend = null
+          if (prevMins != null) {
+            if (entryMins < prevMins) trend = { arrow: '↑', color: 'text-emerald-500' }
+            else if ( entryMins > prevMins) trend = { arrow: '↓', color: '<text-red-5></text-red-5>00' }
+            else trend = { arrow: '→', color: 'text-gray-400'}
+          }
+          
           return (
             <div 
               key={entry.id}
@@ -260,7 +278,7 @@ export function BedtimeTracker({
               </div>
               <div className="text-right">
                 <p className={`text-lg font-bold ${status.text}`}>
-                  {convertTime(entry.bedtime)}
+                  {trend && <span className={`${trend.color} text-xl`}>{trend.arrow}</span>} {convertTime(entry.bedtime)}
                 </p>
                 <p className="text-sm">{status.label}</p>
               </div>

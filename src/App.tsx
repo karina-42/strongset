@@ -674,16 +674,18 @@ async function handleDeleteCalendarNote(id: string) {
             <UserButton />
           </Show>
           <Show when="signed-out">
-            <SignInButton mode='modal'>
-              <button className='bg-emerald-500 text-white px-3 py-1 rounded-lg text-sm font-semibold active:bg-emerald-600'>
-                Sign In
-              </button>
-            </SignInButton>
-            <SignUpButton mode='modal'>
-              <button className='bg-purple-500 text-white px-3 py-1 rounded-lg text-sm font-semibold active:bg-purple-600'>
-                Sign Up
-              </button>
-            </SignUpButton>
+            <div className='flex flex-col gap-1'>
+              <SignInButton mode='modal'>
+                <button className='bg-emerald-500 text-white px-3 py-1 rounded-lg text-sm font-semibold active:bg-emerald-600'>
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode='modal'>
+                <button className='bg-purple-500 text-white px-3 py-1 rounded-lg text-sm font-semibold active:bg-purple-600'>
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </div>
           </Show>
         </div>
         {mode === 'gym' && (

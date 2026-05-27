@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import strongsetLogo from './assets/StrongSet_Logo.png'
 import { type MonthOverride, type CalendarNote, type Exercise, type WorkoutEntry } from './types'
 import type { TodayEntryDisplay } from './types'
@@ -22,6 +22,7 @@ import { VideoList } from './components/VideoList'
 import { getPaceGradientClasses } from './utils/visitColors'
 import { WorkoutCalendar } from './components/WorkoutCalendar'
 import './App.css'
+import { Show, SignInButton, SignUpButton, UserButton, useUser, useAuth } from '@clerk/react'
 import { getTabColors } from './utils/tabColors'
 import { calculateSleepCount } from './utils/sleepUtils'
 
@@ -79,6 +80,23 @@ function App() {
     { id: '1', yearMonth: '2026-03', note: 'difficult month' }
   ])
 
+  // user
+  const { isLoaded, isSignedIn } = useUser() // add user here if needed
+  const { getToken } = useAuth()
+
+  const authFetch = useCallback(async (url: string, options: RequestInit = {}) => {
+    const token = await getToken()
+    if (!token) throw new Error('Not signed in')
+    return fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        ...options.headers,
+      }
+    })
+  }, [getToken])
+
   // To display the last done date
   const lastDoneDate = (() => {
     const exercise = exercises.find(
@@ -118,7 +136,7 @@ function App() {
         equipment: input.equipment,
       }
 
-      await fetch(`${API_URL}/exercises`, {
+      await authFetch(`${API_URL}/exercises`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newExercise),
@@ -166,13 +184,13 @@ function App() {
         }
 
         // Update database
-        await fetch(`${API_URL}/workouts/${editingEntryId}`, {
+        await authFetch(`${API_URL}/workouts/${editingEntryId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedEntry)
         })
 
-        await fetch(`${API_URL}/exercises/${exercise!.id}`, {
+        await authFetch(`${API_URL}/exercises/${exercise!.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...exercise, area: input.area })
@@ -235,7 +253,7 @@ function App() {
       createdAt: new Date()
     }
 
-    await fetch(`${API_URL}/videos`, {
+    await authFetch(`${API_URL}/videos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newVideo),
@@ -251,14 +269,14 @@ function App() {
   }
 
   // for fetching metadata
-  async function fetchYoutubeMetadata(
+  const fetchYoutubeMetadata = useCallback(async (
   url: string
-  ): Promise<{ title: string; thumbnailUrl: string }> {
+  ): Promise<{ title: string; thumbnailUrl: string }> => {
     const endpoint = 
       "https://www.youtube.com/oembed?format=json&url=" +
       encodeURIComponent(url)
 
-    const res = await fetch(endpoint)
+    const res = await authFetch(endpoint)
 
     if (!res.ok) {
       throw new Error("Failed to fetch YouTube metadata")
@@ -270,7 +288,7 @@ function App() {
       title: data.title,
       thumbnailUrl: data.thumbnail_url,
     }
-  }
+  }, [authFetch])
 
   async function finishWorkout() {
     if (todayEntries.length === 0) return
@@ -278,7 +296,7 @@ function App() {
     // send all to backend
     await Promise.all(
       todayEntries.map(entry =>
-        fetch(`${API_URL}/workouts`, {
+        authFetch(`${API_URL}/workouts`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(entry),
@@ -349,7 +367,8 @@ function App() {
   }
 
   useEffect(() => {
-    fetch(`${API_URL}/workouts`)
+    if (!isSignedIn) return
+    authFetch(`${API_URL}/workouts`)
     .then(r => r.json())
     .then((data: WorkoutEntry[]) =>
       setWorkoutHistory(
@@ -359,24 +378,27 @@ function App() {
         }))
       )
     )
-  }, [])
+  }, [authFetch, isSignedIn])
 
   const { url, title } = draftVideoWorkout
 
   useEffect(() => {
-    fetch(`${API_URL}/videos`)
+    if (!isSignedIn) return
+    authFetch(`${API_URL}/videos`)
     .then(res => res.json())
     .then(data => setVideoWorkouts(data))
     .catch(console.error)
-  }, [])
+  }, [authFetch, isSignedIn])
 
   useEffect(() => {
-    fetch(`${API_URL}/exercises`)
+    if (!isSignedIn) return
+    authFetch(`${API_URL}/exercises`)
     .then(r => r.json())
     .then(setExercises)
-  }, [])
+  }, [authFetch, isSignedIn])
 
   useEffect(() => {
+    if (!isSignedIn) return
     if (!url.trim()) return
     if (title) return
 
@@ -398,22 +420,24 @@ function App() {
     return () => {
       cancelled = true
     }
-  }, [url, title])
+  }, [url, title, fetchYoutubeMetadata, isSignedIn])
 
   useEffect(() => {
-    fetch(`${API_URL}/settings`)
+    if (!isSignedIn) return
+    authFetch(`${API_URL}/settings`)
     .then(r => r.json())
     .then(data => {
       if (data[0]?.bedTimeGoal) {
         setSleepGoalTime(data[0].bedTimeGoal)
       }
     })
-  }, [])
+  }, [authFetch, isSignedIn])
 
   //save to localStorage whenever todayEntries changes
   useEffect(() => {
+    if (!isSignedIn) return
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todayEntries))
-  }, [todayEntries])
+  }, [todayEntries, isSignedIn])
 
   // todayEntriesList display helper
   const todayEntriesForDisplay: TodayEntryDisplay[] = todayEntries.map(entry => {
@@ -426,7 +450,8 @@ function App() {
   })
 
   useEffect(() => {
-    fetch(`${API_URL}/sleep`)
+    if (!isSignedIn) return
+    authFetch(`${API_URL}/sleep`)
     .then(r => r.json())
     .then((data: SleepEntry[]) =>
       setSleepEntries(
@@ -436,13 +461,14 @@ function App() {
         }))
       )
     )
-  }, [])
+  }, [authFetch, isSignedIn])
 
   useEffect(() => {
-    fetch(`${API_URL}/calendar-notes`)
+    if (!isSignedIn) return
+    authFetch(`${API_URL}/calendar-notes`)
     .then(r => r.json())
     .then((data: CalendarNote[]) => setCalendarNotes(data))
-  }, [])
+  }, [authFetch, isSignedIn])
 
   // handle deleting an entry from Today's Entries
   const handleDeleteEntry = (entryId: string) => {
@@ -478,7 +504,7 @@ function App() {
   }
 
   async function handleDeleteHistoryEntry(entryId: string) {
-    await fetch(`${API_URL}/workouts/${entryId}`, {
+    await authFetch(`${API_URL}/workouts/${entryId}`, {
       method: "DELETE",
     })
     setWorkoutHistory(prev => prev.filter(entry => entry.id !== entryId))
@@ -532,7 +558,7 @@ function App() {
     setSleepEntries(prev => [...prev, sleepEntry])
 
     try {
-      const response = await fetch(`${API_URL}/sleep`, {
+      const response = await authFetch(`${API_URL}/sleep`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(sleepEntry),
@@ -549,7 +575,7 @@ function App() {
   async function handleBedTimeGoal(newGoal: string) {
     setSleepGoalTime(newGoal)
     // Update database
-    await fetch(`${API_URL}/settings/`, {
+    await authFetch(`${API_URL}/settings/`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bedTimeGoal: newGoal })
@@ -572,7 +598,7 @@ function App() {
     if (newEquipment) updates.equipment = newEquipment
     if (newName) updates.name = newName
 
-    await fetch(`${API_URL}/exercises/${exerciseId}`, {
+    await authFetch(`${API_URL}/exercises/${exerciseId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates)
@@ -580,7 +606,7 @@ function App() {
   }
 
   async function handleEditVideo(updatedVideo: VideoWorkout) {
-    await fetch(`${API_URL}/videos/${updatedVideo.id}`, {
+    await authFetch(`${API_URL}/videos/${updatedVideo.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedVideo)
@@ -594,7 +620,7 @@ function App() {
   async function handleDeleteVideo(id: string) {
     if (!confirm("Delete this video?")) return
 
-    await fetch(`${API_URL}/videos/${id}`, {
+    await authFetch(`${API_URL}/videos/${id}`, {
       method: "DELETE"
     })
 
@@ -609,7 +635,7 @@ async function handleAddCalendarNote(date: string, text: string) {
     text,
     createdAt: new Date()
   };
-  await fetch(`${API_URL}/calendar-notes`, {
+  await authFetch(`${API_URL}/calendar-notes`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(note)
@@ -621,12 +647,15 @@ async function handleAddCalendarNote(date: string, text: string) {
 async function handleDeleteCalendarNote(id: string) {
   if (!confirm("Delete this note?")) return
 
-    await fetch(`${API_URL}/calendar-notes/${id}`, {
+    await authFetch(`${API_URL}/calendar-notes/${id}`, {
       method: "DELETE"
     })
 
     setCalendarNotes(prev => prev.filter(n => n.id !== id))    
 }
+
+  if (!isLoaded) return <div>Loading...</div>
+
 
 /***************************************************/
 /***************************************************/
@@ -639,7 +668,24 @@ async function handleDeleteCalendarNote(id: string) {
       {/* header */}
       {/* logo */}
       <div className='flex items-center justify-between px-3 py-3'>
-        <img src={strongsetLogo} className="h-16" alt="StrongSet"></img>
+        <div className='flex items-center gap-3'>
+          <img src={strongsetLogo} className="h-16" alt="StrongSet"></img>
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
+          <Show when="signed-out">
+            <SignInButton mode='modal'>
+              <button className='bg-emerald-500 text-white px-3 py-1 rounded-lg text-sm font-semibold active:bg-emerald-600'>
+                Sign In
+              </button>
+            </SignInButton>
+            <SignUpButton mode='modal'>
+              <button className='bg-purple-500 text-white px-3 py-1 rounded-lg text-sm font-semibold active:bg-purple-600'>
+                Sign Up
+              </button>
+            </SignUpButton>
+          </Show>
+        </div>
         {mode === 'gym' && (
           <div className='text-right'>
             {/* cost header */}

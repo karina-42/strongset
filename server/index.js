@@ -126,6 +126,8 @@ app.put("/videos/:id", requireAuth, async(req, res) => {
   res.json({ success: true })
 })
 
+app.get("/health", (req, res) => res.json({ ok: true }))
+
 app.get("/videos", requireAuth, async (req, res) => {
   const allVideos = await videos.find({ userId: req.userId }).toArray()
   res.json(allVideos)

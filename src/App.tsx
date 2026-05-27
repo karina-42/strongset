@@ -668,7 +668,7 @@ async function handleDeleteCalendarNote(id: string) {
       {/* header */}
       {/* logo */}
       <div className='flex items-center justify-between px-3 py-3'>
-        <div className='flex items-center gap-3'>
+        <div className='flex flex-col items-center gap-1'>
           <img src={strongsetLogo} className="h-16" alt="StrongSet"></img>
           <Show when="signed-in">
             <UserButton />

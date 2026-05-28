@@ -65,7 +65,7 @@ export function ExerciseList({
                   onChange={e => setEditExercise({ ...editExercise, equipment: e.target.value as Equipment})}
                 >
                   <option value="">No equipment</option>
-                  {(['balance ball', 'band', 'barbell', 'cable', 'dumbbell', 'kettlebell', 'machine', 'smith machine'] as const).map(eq => (
+                  {(['balance ball', 'band', 'barbell', 'bodyweight', 'cable', 'dumbbell', 'kettlebell', 'machine', 'smith machine'] as const).map(eq => (
                     <option key={eq} value={eq}>{eq}</option>
                   ))}
                 </select>

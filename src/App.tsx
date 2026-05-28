@@ -322,7 +322,8 @@ function App() {
     if (!lastEntry) {
       setDraftInput({
         ...defaultInput,
-        exerciseName: targetExercise.name      
+        exerciseName: targetExercise.name,  
+        equipment: targetExercise.equipment    
       })
       return
     }
@@ -337,6 +338,7 @@ function App() {
       restMin: lastEntry.restMin,
       restSec: lastEntry.restSec,
       note: lastEntry.note,
+      equipment: targetExercise.equipment,
     })
 
     // scroll to form
@@ -363,6 +365,7 @@ function App() {
       restMin: entryToEdit.restMin,
       restSec: entryToEdit.restSec,
       note: entryToEdit.note,
+      equipment: exercise.equipment,
     })
   }
 
@@ -495,6 +498,7 @@ function App() {
       restMin: historyEntryToEdit.restMin,
       restSec: historyEntryToEdit.restSec,
       note: historyEntryToEdit.note,
+      equipment: exercise.equipment,
     })
 
     setMode("gym")

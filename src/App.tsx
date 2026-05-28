@@ -130,7 +130,7 @@ function App() {
     // if no exercise is saved, create a new one
     if (!exercise) {
       const newExercise: Exercise = {
-        id: normalizedName.split(" ").join("-").toLowerCase(),
+        id: crypto.randomUUID(),
         name: normalizedName,
         area: input.area,
         equipment: input.equipment,
@@ -627,6 +627,29 @@ function App() {
     setVideoWorkouts(prev => prev.filter(v => v.id !== id))    
   }
 
+  //functions to edit and delete exercise
+    async function handleEditExercise(updatedExercise: Exercise) {
+    await authFetch(`${API_URL}/exercises/${updatedExercise.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedExercise)
+    })
+
+    setExercises(prev =>
+      prev.map(v => v.id === updatedExercise.id ? updatedExercise : v)
+    )
+  }
+
+    async function handleDeleteExercise(id: string) {
+    if (!confirm("Delete this exercise?")) return
+
+    await authFetch(`${API_URL}/exercises/${id}`, {
+      method: "DELETE"
+    })
+
+    setExercises(prev => prev.filter(e => e.id !== id))    
+  }
+
   // function to add a calendar note
 async function handleAddCalendarNote(date: string, text: string) {
   const note: CalendarNote = {
@@ -751,6 +774,9 @@ async function handleDeleteCalendarNote(id: string) {
             exercises={exercises}
             workoutHistory={workoutHistory}
             onSelectExercise={handleSelectedExercise}
+            onEditExercise={handleEditExercise}
+            onDeleteExercise={handleDeleteExercise}
+
           />
           <div className='mt-6'>
           {/* Form to edit data of selected exercise to input today */}

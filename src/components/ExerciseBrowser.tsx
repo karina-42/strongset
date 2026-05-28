@@ -10,6 +10,8 @@ interface ExerciseBrowserProps {
   exercises: Exercise[];
   workoutHistory: WorkoutEntry[];
   onSelectExercise: (exercise: Exercise) => void;
+  onEditExercise: (exercise: Exercise) => void;
+  onDeleteExercise: (id: string) => void;
 }
 
 type Filter = "all" | "upper" | "lower" | "full" | "kickboxing"
@@ -19,7 +21,9 @@ type Filter = "all" | "upper" | "lower" | "full" | "kickboxing"
 export function ExerciseBrowser({
   exercises, 
   workoutHistory,
-  onSelectExercise
+  onSelectExercise,
+  onEditExercise,
+  onDeleteExercise
 }:  ExerciseBrowserProps) {
   const [filter, setFilter] = useState<Filter>("all")
   const [equipmentFilter, setEquipmentFilter] = useState<Equipment | "all">("all")
@@ -79,6 +83,8 @@ export function ExerciseBrowser({
       exercises={filteredExercises}
       workoutHistory={workoutHistory}
       onSelectExercise={onSelectExercise}
+      onEditExercise={onEditExercise}
+      onDeleteExercise={onDeleteExercise}
       />
     </div>
   )

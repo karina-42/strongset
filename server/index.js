@@ -178,6 +178,12 @@ app.delete("/calendar-notes/:id", requireAuth, async (req, res) => {
   res.json({success: true});
 });
 
+app.delete("/exercises/:id", requireAuth, async (req, res) => {
+  const { id } = req.params
+  await exercises.deleteOne({ id: id })
+  res.json({success: true});
+});
+
 app.listen(port, () => {
   console.log(`Server runnning on port ${port}`)
 })

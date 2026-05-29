@@ -39,7 +39,8 @@ const defaultInput:DraftEntryInput = {
   sets: 3,
   restMin: 1,
   restSec: 30,
-  note: ""
+  note: "",
+  equipment: "dumbbell"
 }
 
 // Default entries for video workout form

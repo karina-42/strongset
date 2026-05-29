@@ -22,7 +22,7 @@ export function ExerciseList({
   function handlePressStart(exercise: Exercise) {
     longPressTimer.current = setTimeout(() => {
       setEditExercise(exercise)
-    }, 500)
+    }, 800)
   }
 
   function handlePressEnd() {
@@ -83,6 +83,7 @@ export function ExerciseList({
                 onMouseUp={handlePressEnd}
                 onTouchStart={() => handlePressStart(exercise)}
                 onTouchEnd={handlePressEnd}
+                onTouchMove={handlePressEnd}
               >         
                 <span className="font-medium">{exercise.name}</span>
                 {lastWorkout && (

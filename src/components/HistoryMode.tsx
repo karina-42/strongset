@@ -112,7 +112,7 @@ export function HistoryMode({
           Full
         </button>
         <button
-          className={`px-4 py-2 rounded ${historyArea === 'full' ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`}
+          className={`px-4 py-2 rounded ${historyArea === 'kickboxing' ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`}
           onClick={() => setHistoryArea('kickboxing')}
         >
           Kickboxing

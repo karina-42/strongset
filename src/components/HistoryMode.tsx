@@ -130,26 +130,6 @@ export function HistoryMode({
         </button>
       </div>
 
-      {/* Display grouped by exercise
-      <div className='space-y-4'>
-        {Object.entries(historyByExercise)
-          .map(([exerciseName, entries]) => {
-            //sort entries first
-          const sortedEntries = entries.sort((a, b) => b.dateDone.getTime() - a.dateDone.getTime())
-          return [exerciseName, sortedEntries] as [string, WorkoutEntry[]]
-          })
-          //sort exercises by most recent entry
-        .sort(([, a], [, b]) => b[0].dateDone.getTime() - a[0].dateDone.getTime())
-        .map(([exerciseName, sortedEntries]) => (
-          <div key={exerciseName} className='border p-3 rounded'>
-            <h2 className='font-bold text-lg'>{exerciseName}</h2>
-            <p className='text-sm text-gray-600'>
-              Last done: {sortedEntries[0].dateDone.toLocaleDateString()}
-            </p>
-            <p className='text-sm text-gray-600'>
-              Total sessions: {sortedEntries.length}
-            </p> */}
-
       {/* Group by date */}
       <div className='space-y-4'>
         {Object.entries(historyByDay)
@@ -175,49 +155,45 @@ export function HistoryMode({
                   .slice(0, 2)
 
                 return (
-                  <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded flex justify-between items-start gap-2'>
-                    <div className="flex flex-wrap">
-                      <span className="font-semibold text-purple-700 calitalize">{exerciseName}: </span>
-                      {/* hide reps and sets if kickboxing */}
-                      {entry.area !== "kickboxing" && (
-                        <>
-                          {entry.weight && <span>{entry.weight}kg x {entry.numOfWeights} </span>}
-                          <span>{entry.sets} sets x {entry.reps} reps</span>
-                        </>
-                      )}  
-                      {entry.note && <span className='text-gray-600'> - {entry.note}</span>}
-                    </div>
-                    {/* prev sessions */}
-                    {prevSessions.length > 0 && (
-                      <div className="w-full mt-1 space-y-0.5">
-                        {prevSessions.map(prev => (
-                          <div key={prev.id} className="text-xs text-gray-400 pl-2">
-                            {prev.dateDone.toLocaleDateString()}: {prev.weight && `${prev.weight}kg x ${prev.numOfWeights} / `}{prev.sets}x{prev.reps}
-                          </div>
-                        ))}
+                  <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded space-y-1'>
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex-1">
+                        <span className="font-semibold text-purple-700 calitalize">{exerciseName}: </span>
+                        {/* hide reps and sets if kickboxing */}
+                        {entry.area !== "kickboxing" && entry.weight && (
+                          <span>{entry.weight}kg x {entry.numOfWeights} / {entry.reps} reps x {entry.sets} sets</span>
+                        )}
+                      </div> 
+                      {/* Edit and Delete buttons */}
+                      <div className="flex gap-1 shrink-0">
+                        <button
+                          className="px-2 py-1 bg-blue-500 text-white text-xs rounded active:bg-blue-600 cursor-pointer"
+                          onClick={() => {
+                            onEdit(entry.id)
+                          }}
+                          >
+                            Edit
+                        </button>
+                        <button
+                          className="px-2 py-1 bg-red-500 text-white text-sm rounded active:bg-red-600 ml-2 cursor-pointer"
+                          onClick={() => {
+                            if (confirm('Delete entry?')) {
+                              onDelete(entry.id)
+                            }
+                          }}
+                        >
+                          x
+                        </button>
                       </div>
-                    )}
-                    {/* Edit and Delete buttons */}
-                    <div className="flex gap-1 shrink-0">
-                      <button
-                      className="px-2 py-1 bg-blue-500 text-white text-xs rounded active:bg-blue-600 cursor-pointer"
-                      onClick={() => {
-                        onEdit(entry.id)
-                      }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="px-2 py-1 bg-red-500 text-white text-sm rounded active:bg-red-600 ml-2 cursor-pointer"
-                        onClick={() => {
-                          if (confirm('Delete entry?')) {
-                            onDelete(entry.id)
-                          }
-                        }}
-                      >
-                        x
-                      </button>
-                    </div>
+                    </div> 
+                    {/* Note */}
+                    {entry.note && <div className='text-gray-600 pl-1'>- {entry.note}</div>}
+                    {/* prev sessions */}
+                      {prevSessions.map(prev => (
+                        <div key={prev.id} className="text-xs text-gray-400 pl-1">
+                          {prev.dateDone.toLocaleDateString()}: {prev.weight && `${prev.weight}kg x ${prev.numOfWeights} / `}{prev.reps}x{prev.sets}{prev.note && ` - ${prev.note}`}
+                        </div>
+                      ))}
                   </div>
                 )
               })}

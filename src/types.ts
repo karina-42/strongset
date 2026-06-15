@@ -37,6 +37,9 @@ export interface WorkoutEntry {
   note?: string;
   dateDone: Date;
   area: "upper" | "lower" | "full" | "kickboxing";
+  bandColor?: string;
+  cablePlate?: number;
+  isJustBar?: boolean;
 }
 
 // Display type to display the name of the exercise in 
@@ -56,6 +59,9 @@ export type DraftEntryInput = {
   restSec: number;
   note?: string;
   equipment?: Equipment;
+  bandColor?: string;
+  cablePlate?: number;
+  isJustBar?: boolean;
 }
 
 export type Equipment = "barbell" | "dumbbell" | "cable" | "smith machine" | "machine" | "bodyweight" | "band" | "kettlebell" | "balance ball";

@@ -181,7 +181,10 @@ function App() {
           restSec: input.restSec,
           note: input.note,
           dateDone: originalEntry.dateDone,
-          area: input.area
+          area: input.area,
+          bandColor: input.bandColor,
+          cablePlate: input.cablePlate,
+          isJustBar: input.isJustBar,
         }
 
         // Update database
@@ -225,7 +228,10 @@ function App() {
         restSec: input.restSec,
         note: input.note,
         dateDone: new Date(),
-        area: exercise.area
+        area: exercise.area,
+        bandColor: input.bandColor,
+        cablePlate: input.cablePlate,
+        isJustBar: input.isJustBar,
       }
       // add it to day's entries
       setTodayEntries(prev => [...prev, newEntry])
@@ -340,6 +346,9 @@ function App() {
       restSec: lastEntry.restSec,
       note: lastEntry.note,
       equipment: targetExercise.equipment,
+      bandColor: lastEntry.bandColor,
+      cablePlate: lastEntry.cablePlate,
+      isJustBar: lastEntry.isJustBar,
     })
 
     // scroll to form
@@ -367,6 +376,9 @@ function App() {
       restSec: entryToEdit.restSec,
       note: entryToEdit.note,
       equipment: exercise.equipment,
+      bandColor: entryToEdit.bandColor,
+      cablePlate: entryToEdit.cablePlate,
+      isJustBar: entryToEdit.isJustBar,
     })
   }
 
@@ -500,6 +512,9 @@ function App() {
       restSec: historyEntryToEdit.restSec,
       note: historyEntryToEdit.note,
       equipment: exercise.equipment,
+      bandColor: historyEntryToEdit.bandColor,
+      cablePlate: historyEntryToEdit.cablePlate,
+      isJustBar: historyEntryToEdit.isJustBar,
     })
 
     setMode("gym")

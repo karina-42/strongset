@@ -160,8 +160,13 @@ export function HistoryMode({
                       <div className="flex-1">
                         <span className="font-semibold text-purple-700 calitalize">{exerciseName}: </span>
                         {/* hide reps and sets if kickboxing */}
-                        {entry.area !== "kickboxing" && entry.weight && (
-                          <span>{entry.weight}kg x {entry.numOfWeights} / {entry.reps} reps x {entry.sets} sets</span>
+                        {entry.area !== "kickboxing" && (
+                          <>
+                            {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x ${entry.numOfWeights} / </span> : null}
+                            {entry.bandColor && <span>Band: {entry.bandColor} / </span>}
+                            {entry.cablePlate && <span>Plate: {entry.cablePlate} / </span>}
+                            <span>{entry.reps} reps x {entry.sets} sets</span>                          
+                          </>
                         )}
                       </div> 
                       {/* Edit and Delete buttons */}

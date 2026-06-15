@@ -67,6 +67,7 @@ export function DraftEntryForm({
       {/* weight in kg and number of weights, reps and sets*/}
       {value.area !== "kickboxing" && (
         <div className="space-y-4">
+          {value.equipment !== "bodyweight" &&  value.equipment !== "band" && value.equipment !== "balance ball" && value.equipment !== "cable" && (
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
               <label className="text-sm text-gray-600">Weight:</label>
@@ -74,6 +75,7 @@ export function DraftEntryForm({
                 <input
                   className="w-16 border rounded-lg p-2 text-center"
                   type="number"
+                  disabled={value.isJustBar}
                   value={value.weight ?? ""}
                   onChange={(e) =>
                     onChange({
@@ -86,6 +88,7 @@ export function DraftEntryForm({
               </div>
             </div>
             <div>
+              {!value.isJustBar && (
               <div className="space-y-2">
                 <label className="text-sm text-gray-600">Number of weights:</label>
                 <div className="flex items-center gap-2">
@@ -101,9 +104,63 @@ export function DraftEntryForm({
                     }
                   />
                 </div>
+              </div>                
+              )}
+
+            </div>
+          </div>            
+          )}
+          {value.equipment === "band" && (
+          <div>
+            <label className="text-sm text-gray-600">Band color:</label>
+            <input 
+              type="text" 
+              className="w-full border rounded-lg p-2"
+              value={value.bandColor}
+              placeholder='enter color'
+              onChange={(e) =>
+                onChange({
+                  ...value,
+                  bandColor: e.target.value
+                })
+              }
+            />
+          </div>
+          )}
+          {value.equipment === "cable" && (
+            <div className="space-y-2">
+              <label className="text-sm text-gray-600">Plate number:</label>
+              <div className="flex items-center gap-2">
+                <input
+                  className="w-16 border rounded-lg p-2 text-center"
+                  type="number"
+                  value={value.cablePlate}
+                  onChange={(e) =>
+                    onChange({
+                      ...value,
+                      cablePlate: Number(e.target.value)
+                    })
+                  }
+                />
               </div>
             </div>
-          </div>
+          )}
+          {(value.equipment === "barbell" || value.equipment === "smith machine") && (
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={value.isJustBar ?? false}
+                onChange={(e) =>
+                  onChange({
+                    ...value,
+                    isJustBar: e.target.checked,
+                    weight: e.target.checked ? 0 : null
+                  })
+                }
+              />
+              <label className="text-m text-gray-600">Just the bar</label>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
               <label className="text-sm text-gray-600">Reps:</label>
@@ -228,6 +285,7 @@ export function DraftEntryForm({
                   onChange({
                     ...value,
                     equipment,
+                    isJustBar: false,
                   })
                 }
               />

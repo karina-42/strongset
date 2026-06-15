@@ -162,7 +162,7 @@ export function HistoryMode({
                         {/* hide reps and sets if kickboxing */}
                         {entry.area !== "kickboxing" && (
                           <>
-                            {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x ${entry.numOfWeights} / </span> : null}
+                            {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x {entry.numOfWeights} / </span> : null}
                             {entry.bandColor && <span>Band: {entry.bandColor} / </span>}
                             {entry.cablePlate && <span>Plate: {entry.cablePlate} / </span>}
                             <span>{entry.reps} reps x {entry.sets} sets</span>                          

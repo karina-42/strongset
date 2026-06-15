@@ -147,6 +147,9 @@ function App() {
       exercise = newExercise
     }
 
+    const noWeightEquipment = ["cable", "bodyweight", "band", "balance ball"]
+    const usesWeight = !noWeightEquipment.includes(input.equipment ?? "")
+
     //check if editing or adding new
     if (editingEntryId) {
       //Check which array it's in
@@ -169,12 +172,12 @@ function App() {
         const originalEntry = workoutHistory.find(entry => entry.id === editingEntryId)
         if (!originalEntry) return
 
-        // Create updated entry object
+        // Create updated entry object        
         const updatedEntry = {
           id: editingEntryId,
           exerciseId: exercise!.id,
-          weight: input.weight,
-          numOfWeights: input.numOfWeights,
+          weight: usesWeight ? input.weight : null,
+          numOfWeights: usesWeight ? input.numOfWeights : null,
           reps: input.reps,
           sets: input.sets,
           restMin: input.restMin,
@@ -220,8 +223,8 @@ function App() {
       const newEntry: WorkoutEntry = {
         id: crypto.randomUUID(),
         exerciseId: exercise.id,
-        weight: input.weight,
-        numOfWeights: input.numOfWeights,
+        weight: usesWeight ? input.weight : null,
+        numOfWeights: usesWeight ? input.numOfWeights : null,
         reps: input.reps,
         sets: input.sets,
         restMin: input.restMin,

@@ -88,7 +88,10 @@ export function ExerciseList({
                 <span className="font-medium">{exercise.name}</span>
                 {lastWorkout && (
                   <span className="text-sm text-gray-600 ml-2">
-                    {lastWorkout.weight && `${lastWorkout.weight}kg x ${lastWorkout.numOfWeights} / `}
+                    {lastWorkout.isJustBar && "Bar / "}
+                    {!lastWorkout.isJustBar && lastWorkout.weight && `${lastWorkout.weight}kg x ${lastWorkout.numOfWeights} / `}
+                    {lastWorkout.bandColor && `Band: ${lastWorkout.bandColor} / `}
+                    {lastWorkout.cablePlate && `Plate: ${lastWorkout.cablePlate} / `}
                     {lastWorkout.reps} X {lastWorkout.sets}
                   </span>
                 )}

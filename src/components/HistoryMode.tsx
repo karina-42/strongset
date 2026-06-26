@@ -19,23 +19,24 @@ export function HistoryMode({
 }: HistoryModeProps) {
   const [historyArea, setHistoryArea] = useState<Exercise['area'] | 'all'>('all')
   const [showEditExercises, setShowEditExercises] = useState(false)
+  const [ viewMode, setViewMode ] = useState<'byDay' | 'byExercise'>('byDay')
 
   //filter history by area
   const filteredHistory = historyArea === 'all'
     ? workoutHistory
     : workoutHistory.filter(entry => entry.area === historyArea)
   
-  // //group by exercise for display
-  // const historyByExercise = filteredHistory.reduce((acc, entry) => {
-  //   const exercise = exercises.find(e => e.id === entry.exerciseId)
-  //   const exerciseName = exercise?.name ?? 'Unknown'
+  //group by exercise for display
+  const historyByExercise = filteredHistory.reduce((acc, entry) => {
+    const exercise = exercises.find(e => e.id === entry.exerciseId)
+    const exerciseName = exercise?.name ?? 'Unknown'
 
-  //   if (!acc[exerciseName]) {
-  //     acc[exerciseName] = []
-  //   }
-  //   acc[exerciseName].push(entry)
-  //   return acc
-  // }, {} as Record<string, WorkoutEntry[]>)
+    if (!acc[exerciseName]) {
+      acc[exerciseName] = []
+    }
+    acc[exerciseName].push(entry)
+    return acc
+  }, {} as Record<string, WorkoutEntry[]>)
 
   //Group by day
   const historyByDay = filteredHistory.reduce((acc,entry) => {
@@ -96,6 +97,22 @@ export function HistoryMode({
       {/* history */}
       <h1 className="text-3xl font-bold text-purple-700">Workout History</h1>
 
+      {/* Toggle buttons */}
+      <div className="flex gap-2 mb-4">
+        <button
+        className={`px-4 py-2 rounded ${viewMode === 'byDay' ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`}
+        onClick={() => setViewMode('byDay')}
+        >
+          By Day
+        </button>
+        <button 
+          className={`px-4 py-2 rounded ${viewMode === 'byExercise' ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`}
+          onClick={() => setViewMode('byExercise')}
+        >
+          By Exercise
+        </button>
+      </div>
+
       {/* Area filter */}
       <div className='flex gap-2 mt-4 mb-4 flex-wrap'>
         <button
@@ -131,82 +148,126 @@ export function HistoryMode({
       </div>
 
       {/* Group by date */}
-      <div className='space-y-4'>
-        {Object.entries(historyByDay)
-          .map(([exerciseDate, entries]) => {
-            //sort entries first
-          const sortedEntries = entries.sort((a, b) => a.dateDone.getTime() - b.dateDone.getTime())
-          return [exerciseDate, sortedEntries] as [string, WorkoutEntry[]]
-          })
-          //sort exercises by most recent entry
-        .sort(([, a], [, b]) => b[0].dateDone.getTime() - a[0].dateDone.getTime())
-        .map(([exerciseDate, sortedEntries]) => (
-          <div key={exerciseDate} className='border p-3 rounded'>
-            <h2 className='font-bold text-lg'>{new Date(exerciseDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' })}</h2>
-            
-            {/* Show exercises done that day */}
-            <div className='mt-2 space-y-1'>
-              {sortedEntries.map(entry => {
-                const exercise = exercises.find(e => e.id === entry.exerciseId)
-                const exerciseName = exercise?.name ?? 'Unknown'
-                const prevSessions = workoutHistory
-                  .filter(e => e.exerciseId === entry.exerciseId && e.dateDone < entry.dateDone)
-                  .sort((a, b) => b.dateDone.getTime() - a.dateDone.getTime())
-                  .slice(0, 2)
+      {viewMode === 'byDay' && (
+        <div className='space-y-4'> 
+          {Object.entries(historyByDay)
+            .map(([exerciseDate, entries]) => {
+              //sort entries first
+            const sortedEntries = entries.sort((a, b) => a.dateDone.getTime() - b.dateDone.getTime())
+            return [exerciseDate, sortedEntries] as [string, WorkoutEntry[]]
+            })
+            //sort exercises by most recent entry
+            .sort(([, a], [, b]) => b[0].dateDone.getTime() - a[0].dateDone.getTime())
+            .map(([exerciseDate, sortedEntries]) => (
+            <div key={exerciseDate} className='border p-3 rounded'>
+              <h2 className='font-bold text-lg'>{new Date(exerciseDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' })}</h2>
+              
+              {/* Show exercises done that day */}
+              <div className='mt-2 space-y-1'>
+                {sortedEntries.map(entry => {
+                  const exercise = exercises.find(e => e.id === entry.exerciseId)
+                  const exerciseName = exercise?.name ?? 'Unknown'
+                  const prevSessions = workoutHistory
+                    .filter(e => e.exerciseId === entry.exerciseId && e.dateDone < entry.dateDone)
+                    .sort((a, b) => b.dateDone.getTime() - a.dateDone.getTime())
+                    .slice(0, 2)
 
-                return (
-                  <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded space-y-1'>
-                    <div className="flex justify-between items-start gap-2">
+                  return (
+                    <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded space-y-1'>
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1">
+                          <span className="font-semibold text-purple-700 calitalize">{exerciseName}: </span>
+                          {/* hide reps and sets if kickboxing */}
+                          {entry.area !== "kickboxing" && (
+                            <>
+                              {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x {entry.numOfWeights} / </span> : null}
+                              {entry.bandColor && <span>Band: {entry.bandColor} / </span>}
+                              {entry.cablePlate && <span>Plate: {entry.cablePlate} / </span>}
+                              <span>{entry.reps} reps x {entry.sets} sets</span>                          
+                            </>
+                          )}
+                        </div> 
+                        {/* Edit and Delete buttons */}
+                        <div className="flex gap-1 shrink-0">
+                          <button
+                            className="px-2 py-1 bg-blue-500 text-white text-xs rounded active:bg-blue-600 cursor-pointer"
+                            onClick={() => {
+                              onEdit(entry.id)
+                            }}
+                            >
+                              Edit
+                          </button>
+                          <button
+                            className="px-2 py-1 bg-red-500 text-white text-sm rounded active:bg-red-600 ml-2 cursor-pointer"
+                            onClick={() => {
+                              if (confirm('Delete entry?')) {
+                                onDelete(entry.id)
+                              }
+                            }}
+                          >
+                            x
+                          </button>
+                        </div>
+                      </div> 
+                      {/* Note */}
+                      {entry.note && <div className='text-gray-600 pl-1'>- {entry.note}</div>}
+                      {/* prev sessions */}
+                        {prevSessions.map(prev => (
+                          <div key={prev.id} className="text-xs text-gray-400 pl-1">
+                            {prev.dateDone.toLocaleDateString()}: {prev.weight && `${prev.weight}kg x ${prev.numOfWeights} / `}{prev.reps}x{prev.sets}{prev.note && ` - ${prev.note}`}
+                          </div>
+                        ))}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+            ))
+          }
+        </div>        
+      )}
+
+      {/* Group by exercise */}
+      {viewMode === 'byExercise' && (
+        <div className="space-y-4">
+          {Object.entries(historyByExercise)
+            .map(([exerciseName, entries]) => {
+              const sortedEntries = entries.sort((a, b) => b.dateDone.getTime() - a.dateDone.getTime())
+              return [exerciseName, sortedEntries] as [string, WorkoutEntry[]]
+            })
+            .sort(([, a], [,b]) => b[0].dateDone.getTime() - a[0].dateDone.getTime())
+            .map(([exerciseName, sortedEntries]) => (
+              <div key={exerciseName} className="border p-3 rounded">
+                <h2 className="font-bold text-lg text-purple-700 capitalize">{exerciseName}</h2>
+                <p className="text-sm text-gray-500">Last done: {sortedEntries[0].dateDone.toLocaleDateString()} · {sortedEntries.length} sessions</p>
+                <div className="mt-2 space-y-1">
+                  {sortedEntries.slice(0, 3).map(entry => (
+                    <div key={entry.id} className="text-sm bg-gray-50 p-2 rounded flex justify-between items-start gap-2">
                       <div className="flex-1">
-                        <span className="font-semibold text-purple-700 calitalize">{exerciseName}: </span>
-                        {/* hide reps and sets if kickboxing */}
+                        <span className="text-gray-500">{entry.dateDone.toLocaleDateString()}: </span>
                         {entry.area !== "kickboxing" && (
                           <>
                             {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x {entry.numOfWeights} / </span> : null}
                             {entry.bandColor && <span>Band: {entry.bandColor} / </span>}
                             {entry.cablePlate && <span>Plate: {entry.cablePlate} / </span>}
-                            <span>{entry.reps} reps x {entry.sets} sets</span>                          
+                            <span>{entry.reps} reps x {entry.sets} sets</span>
                           </>
                         )}
-                      </div> 
-                      {/* Edit and Delete buttons */}
+                        {entry.note && <div className="text-gray-600">- {entry.note}</div>}
+                      </div>                        
                       <div className="flex gap-1 shrink-0">
-                        <button
-                          className="px-2 py-1 bg-blue-500 text-white text-xs rounded active:bg-blue-600 cursor-pointer"
-                          onClick={() => {
-                            onEdit(entry.id)
-                          }}
-                          >
-                            Edit
-                        </button>
-                        <button
-                          className="px-2 py-1 bg-red-500 text-white text-sm rounded active:bg-red-600 ml-2 cursor-pointer"
-                          onClick={() => {
-                            if (confirm('Delete entry?')) {
-                              onDelete(entry.id)
-                            }
-                          }}
-                        >
-                          x
-                        </button>
+                        <button className="px-2 py-1 bg-blue-500 text-white text-xs rounded active:bg-blue-600 cursor-pointer" onClick={() => onEdit(entry.id)}>Edit</button>
+                        <button className="px-2 py-1 bg-red-500 text-white text-xs rounded active:bg-red-600 cursor-pointer" onClick={() => {if (confirm('Delete entry?')) onDelete(entry.id) }}>x</button>
                       </div>
-                    </div> 
-                    {/* Note */}
-                    {entry.note && <div className='text-gray-600 pl-1'>- {entry.note}</div>}
-                    {/* prev sessions */}
-                      {prevSessions.map(prev => (
-                        <div key={prev.id} className="text-xs text-gray-400 pl-1">
-                          {prev.dateDone.toLocaleDateString()}: {prev.weight && `${prev.weight}kg x ${prev.numOfWeights} / `}{prev.reps}x{prev.sets}{prev.note && ` - ${prev.note}`}
-                        </div>
-                      ))}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        ))
-      }
-    </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>        
+      )} 
+
   </div>
   )
 }

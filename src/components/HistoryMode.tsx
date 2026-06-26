@@ -267,7 +267,6 @@ export function HistoryMode({
           }
         </div>        
       )} 
-
   </div>
   )
 }

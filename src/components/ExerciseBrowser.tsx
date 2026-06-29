@@ -14,7 +14,7 @@ interface ExerciseBrowserProps {
   onDeleteExercise: (id: string) => void;
 }
 
-type Filter = "all" | "upper" | "lower" | "full" | "kickboxing"
+type Filter = "all" | "upper" | "lower" | "core" | "full" | "kickboxing"
 
 
 
@@ -60,6 +60,7 @@ export function ExerciseBrowser({
         <button type='button' name='all' className={getButtonClass("all")} onClick={() => setFilter("all")}>All</button>
         <button type='button' name='upper' className={getButtonClass("upper")} onClick={() => setFilter("upper")}>Upper</button>
         <button type='button' name='lower' className={getButtonClass("lower")} onClick={() => setFilter("lower")}>Lower</button>
+        <button type='button' name='core' className={getButtonClass("core")} onClick={() => setFilter("core")}>Core</button>
         <button type='button' name='full' className={getButtonClass("full")} onClick={() => setFilter("full")}>Full</button>
         <button type='button' name='kickboxing' className={getButtonClass("kickboxing")} onClick={() => setFilter("kickboxing")}>Kickboxing</button>
       </div>

@@ -12,7 +12,7 @@ export type Workout = {
 export interface Exercise {
   name: string;
   id: string;
-  area: "upper" | "lower" | "full" | "kickboxing";
+  area: "upper" | "lower" | "core" | "full" | "kickboxing";
   equipment?: Equipment;
 }
 
@@ -36,7 +36,7 @@ export interface WorkoutEntry {
   restSec: number;
   note?: string;
   dateDone: Date;
-  area: "upper" | "lower" | "full" | "kickboxing";
+  area: "upper" | "lower" | "core" |"full" | "kickboxing";
   bandColor?: string;
   cablePlate?: number;
   isJustBar?: boolean;
@@ -50,7 +50,7 @@ export type TodayEntryDisplay = WorkoutEntry & {
 
 export type DraftEntryInput = {
   exerciseName: string;
-  area: "upper" | "lower" | "full" | "kickboxing";
+  area: "upper" | "lower" | "core" |"full" | "kickboxing";
   weight: number | null;
   numOfWeights: number | null;
   reps: number | null;
@@ -76,7 +76,7 @@ export type DraftVideoWorkout = {
   thumbnailUrl?: string;
   tags: string[];
   note?: string;
-  area: "upper" | "lower" | "full";
+  area: "upper" | "lower" | "core"| "full";
   repeatFlag: "do-again" | "neutral" | "dont-do-again";
 }
 

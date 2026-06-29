@@ -121,7 +121,7 @@ export function VideoList({
               </div>
               {/* area */}
               <div className="flex gap-2 flex-wrap">
-                {(["upper", "lower", "full"] as const).map(area => (
+                {(["upper", "lower", "core", "full"] as const).map(area => (
                   <button
                     key={area} 
                     onClick={() => setEditDraft({...editDraft, area})}

@@ -7,7 +7,7 @@ export type VideoWorkout = {
   thumbnailUrl?: string;
   tags: string[];
   note?: string;
-  area: "upper" | "lower" | "full";
+  area: "upper" | "lower" | "core" | "full";
   repeatFlag: RepeatFlag
   createdAt: Date
 }

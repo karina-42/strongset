@@ -45,7 +45,7 @@ export function VideoForm({
       <fieldset>
         <legend>Body area</legend>
         <div className="space-y-2">
-          {(["upper", "lower", "full"] as const).map(area => (
+          {(["upper", "lower", "core", "full"] as const).map(area => (
                 <label key={area} className="fles items-center gap-3 p-2 rounded-lg border">
                   <input
                     type="radio"

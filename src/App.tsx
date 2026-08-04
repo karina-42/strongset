@@ -80,6 +80,8 @@ function App() {
   const [monthOverrides] = useState<MonthOverride[]>([
     { id: '1', yearMonth: '2026-03', note: 'difficult month' }
   ])
+  // To add mittWork to daily entries
+  const [mittWork, setMittWork] = useState<{ done: boolean, rounds: number }>({ done: false, rounds: 1 })
 
   // user
   const { isLoaded, isSignedIn } = useUser() // add user here if needed
@@ -313,6 +315,31 @@ function App() {
         })
       )
     )
+
+    if (mittWork.done) {
+      const mittEntry: WorkoutEntry = {
+        id: crypto.randomUUID(),
+        exerciseId: 'mitt-work',
+        weight: null,
+        numOfWeights: null,
+        reps: mittWork.rounds,
+        sets: 1,
+        restMin: 0,
+        restSec: 0,
+        dateDone: new Date(),
+        area: 'mittWork',
+      }
+
+      await authFetch(`${API_URL}/workouts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(mittEntry),
+      })
+
+      setWorkoutHistory(prev => [...prev, mittEntry])
+    }
+
+    setMittWork({ done: false, rounds: 1 }) // reset
 
     setWorkoutHistory(prev => [...prev, ...todayEntries])
     setTodayEntries([])
@@ -818,6 +845,8 @@ async function handleDeleteCalendarNote(id: string) {
           {/* Display a list of today's logged exercises */}
             <TodayEntriesList 
               entries={todayEntriesForDisplay}
+              mittWork={mittWork}
+              onMittWorkChange={setMittWork}
               onEdit = {handleEditEntry} 
               onDelete={handleDeleteEntry}
             />

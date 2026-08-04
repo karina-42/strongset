@@ -12,7 +12,7 @@ export type Workout = {
 export interface Exercise {
   name: string;
   id: string;
-  area: "upper" | "lower" | "core" | "full" | "kickboxing";
+  area: "upper" | "lower" | "core" | "full" | "kickboxing" | "mittWork";
   equipment?: Equipment;
 }
 
@@ -36,7 +36,7 @@ export interface WorkoutEntry {
   restSec: number;
   note?: string;
   dateDone: Date;
-  area: "upper" | "lower" | "core" |"full" | "kickboxing";
+  area: "upper" | "lower" | "core" |"full" | "kickboxing" | "mittWork";
   bandColor?: string;
   cablePlate?: number;
   isJustBar?: boolean;
@@ -50,7 +50,7 @@ export type TodayEntryDisplay = WorkoutEntry & {
 
 export type DraftEntryInput = {
   exerciseName: string;
-  area: "upper" | "lower" | "core" |"full" | "kickboxing";
+  area: "upper" | "lower" | "core" |"full" | "kickboxing" | "mittWork";
   weight: number | null;
   numOfWeights: number | null;
   reps: number | null;

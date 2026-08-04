@@ -2,58 +2,79 @@ import type { TodayEntryDisplay } from "../types";
 
 type TodayEntriesListProps = {
   entries: TodayEntryDisplay[];
+  mittWork: { done: boolean, rounds: number };
+  onMittWorkChange: ( value: { done: boolean, rounds: number }) => void
   onEdit: (value: string) => void
   onDelete: (value: string) => void
 }
 
-export function TodayEntriesList({entries, onEdit, onDelete}: TodayEntriesListProps) {
+export function TodayEntriesList({entries, mittWork, onMittWorkChange, onEdit, onDelete}: TodayEntriesListProps) {
   return (
     <div className="bg-gray-100 rounded-xl p-4 shadow-sm space-y-4">
       <h2 className="text-xl font-bold text-gray-800">Today's Entries</h2>
       {entries.length === 0 ? (
         <p className="text-gray-400 text-center py-8">No entries yet. Add your first exercise!</p>
       ) : (
-        <ul className="space-y-3">
-          {entries.map(entry => (
-            <li key = {entry.id} className="border-b pb-2 mb-2">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <p className="capitalize">
-                    {entry.exerciseName}: 
-                    {entry.area !== "kickboxing" && (
-                      <>
-                        {entry.isJustBar ? " Just the bar / " : entry.weight ? ` ${entry.weight}kg x ${entry.numOfWeights} / ` : ""}
-                        {entry.bandColor ? ` Band: ${entry.bandColor} / ` : ""}
-                        {entry.cablePlate ? ` Plate: ${entry.cablePlate} / ` : ""}
-                        {entry.reps} reps x {entry.sets} sets
-                      </>
-                    )}
-                  </p>
-                  {entry.note && <p className="text-sm text-gray-600">{entry.note}</p>}
-                </div>
-                <button
-                  className="px-3 py-1 bg-blue-500 text-white text-sm rounded-lg active:bg-blue-600 cursor-pointer"
-                  onClick={() => {
-                    onEdit(entry.id)
-                    document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})
-                  }}
+        <div>
+          <ul className="space-y-3">
+            {entries.map(entry => (
+              <li key = {entry.id} className="border-b pb-2 mb-2">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <p className="capitalize">
+                      {entry.exerciseName}: 
+                      {entry.area !== "kickboxing" && (
+                        <>
+                          {entry.isJustBar ? " Just the bar / " : entry.weight ? ` ${entry.weight}kg x ${entry.numOfWeights} / ` : ""}
+                          {entry.bandColor ? ` Band: ${entry.bandColor} / ` : ""}
+                          {entry.cablePlate ? ` Plate: ${entry.cablePlate} / ` : ""}
+                          {entry.reps} reps x {entry.sets} sets
+                        </>
+                      )}
+                    </p>
+                    {entry.note && <p className="text-sm text-gray-600">{entry.note}</p>}
+                  </div>
+                  <button
+                    className="px-3 py-1 bg-blue-500 text-white text-sm rounded-lg active:bg-blue-600 cursor-pointer"
+                    onClick={() => {
+                      onEdit(entry.id)
+                      document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth'})
+                    }}
+                    >
+                      Edit
+                    </button>
+                  <button
+                    className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg active:bg-red-600 ml-2 cursor-pointer" 
+                    onClick={() => {
+                      if (confirm('Delete entry?')) {
+                        onDelete(entry.id)
+                      }
+                    }}
                   >
-                    Edit
+                    X
                   </button>
-                <button
-                  className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg active:bg-red-600 ml-2 cursor-pointer" 
-                  onClick={() => {
-                    if (confirm('Delete entry?')) {
-                      onDelete(entry.id)
-                    }
-                  }}
-                >
-                  X
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="flex items-center gap-2 mt-3 pt-3">
+            <input 
+              type="checkbox" 
+              id="mittWork" 
+              checked={mittWork.done}
+              onChange={(e) => onMittWorkChange({ ...mittWork, done: e.target.checked })}
+            />
+            <label htmlFor="mittWork" className="font-medium">🥊 Mitt work</label>
+            <input 
+              type="number" 
+              min={1} 
+              value={mittWork.rounds} 
+              className="w-12 border rounded p-1 text-center text-sm" 
+              onChange={(e) => onMittWorkChange({ ...mittWork, rounds: Number(e.target.value) })}  
+            />
+            <span className="text-sm text-gray-600">rounds</span>
+          </div>
+        </div>
       )}
     </div>
   )

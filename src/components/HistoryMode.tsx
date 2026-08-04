@@ -182,17 +182,23 @@ export function HistoryMode({
                     <div key={entry.id} className='text-sm bg-gray-50 p-2 rounded space-y-1'>
                       <div className="flex justify-between items-start gap-2">
                         <div className="flex-1">
-                          <span className="font-semibold text-purple-700 calitalize">{exerciseName}: </span>
-                          {/* hide reps and sets if kickboxing */}
-                          {entry.area !== "kickboxing" && (
+                          {entry.area === 'mittWork' ? (
+                            <span className="font-semibold text-purple-700">🥊 Mitt work - {entry.reps} {entry.reps === 1 ? 'round' : 'rounds'}</span>
+                          ) : (
                             <>
-                              {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x {entry.numOfWeights} / </span> : null}
-                              {entry.bandColor && <span>Band: {entry.bandColor} / </span>}
-                              {entry.cablePlate && <span>Plate: {entry.cablePlate} / </span>}
-                              <span>{entry.reps} reps x {entry.sets} sets</span>                          
-                            </>
-                          )}
-                        </div> 
+                              <span className="font-semibold text-purple-700 capitalize">{exerciseName}: </span>
+                              {/* hide reps and sets if kickboxing */}
+                              {entry.area !== "kickboxing" && (
+                                <>
+                                  {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x {entry.numOfWeights} / </span> : null}
+                                  {entry.bandColor && <span>Band: {entry.bandColor} / </span>}
+                                  {entry.cablePlate && <span>Plate: {entry.cablePlate} / </span>}
+                                  <span>{entry.reps} reps x {entry.sets} sets</span>                          
+                                </>
+                              )}
+                              </>
+                            )}
+                            </div>
                         {/* Edit and Delete buttons */}
                         <div className="flex gap-1 shrink-0">
                           <button
@@ -251,15 +257,21 @@ export function HistoryMode({
                     <div key={entry.id} className="text-sm bg-gray-50 p-2 rounded flex justify-between items-start gap-2">
                       <div className="flex-1">
                         <span className="text-gray-500">{entry.dateDone.toLocaleDateString()}: </span>
-                        {entry.area !== "kickboxing" && (
-                          <>
-                            {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x {entry.numOfWeights} / </span> : null}
-                            {entry.bandColor && <span>Band: {entry.bandColor} / </span>}
-                            {entry.cablePlate && <span>Plate: {entry.cablePlate} / </span>}
-                            <span>{entry.reps} reps x {entry.sets} sets</span>
-                          </>
-                        )}
-                        {entry.note && <div className="text-gray-600">- {entry.note}</div>}
+                          {entry.area === 'mittWork' ? (
+                            <span className="font-semibold text-purple-700">🥊 Mitt work — {entry.reps} {entry.reps === 1 ? 'round' : 'rounds'}</span>
+                          ) : (
+                            <>
+                              {entry.area !== "kickboxing" && (
+                              <>
+                                {entry.isJustBar ? <span>Just the bar / </span> : entry.weight ? <span>{entry.weight}kg x {entry.numOfWeights} / </span> : null}
+                                {entry.bandColor && <span>Band: {entry.bandColor} / </span>}
+                                {entry.cablePlate && <span>Plate: {entry.cablePlate} / </span>}
+                                <span>{entry.reps} reps x {entry.sets} sets</span>
+                              </>
+                            )}
+                            {entry.note && <div className="text-gray-600">- {entry.note}</div>}                          
+                            </>
+                          )}
                       </div>                        
                       <div className="flex gap-1 shrink-0">
                         <button className="px-2 py-1 bg-blue-500 text-white text-xs rounded active:bg-blue-600 cursor-pointer" onClick={() => onEdit(entry.id)}>Edit</button>

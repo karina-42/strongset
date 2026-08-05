@@ -29,7 +29,7 @@ export function HistoryMode({
   //group by exercise for display
   const historyByExercise = filteredHistory.reduce((acc, entry) => {
     const exercise = exercises.find(e => e.id === entry.exerciseId)
-    const exerciseName = exercise?.name ?? 'Unknown'
+    const exerciseName = entry.area === 'mittWork' ? '🥊 Mitt work' : (exercise?.name ?? 'Unknown')
 
     if (!acc[exerciseName]) {
       acc[exerciseName] = []

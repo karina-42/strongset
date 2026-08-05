@@ -17,6 +17,7 @@ export function VideoList({
   const [tagsInput, setTagsInput] = useState("")
 
   const repeatFlagColors = {
+    "havent-done": "bg-yellow-50 border border-yellow-200",
     "do-again": "bg-green-50 border border-green-200",
     "neutral": "bg-white border border-gray-200",
     "dont-do-again": "bg-red-50 border border-red-200"
@@ -43,6 +44,9 @@ export function VideoList({
                 className="font-semibold text-purple-700 text-sm leading-tight line-clamp-2">
                 {video.title || "Untitled video"}
               </a>
+              {video.duration && (
+                <span className="text-xs text-gray-500 mt-0.5 block">⏱️ {video.duration}</span>
+              )} 
               {video.tags.length > 0 && (
                 <div className="flex gap-1 flex-wrap mt-1">
                   {video.tags.map(tag => (
@@ -84,6 +88,18 @@ export function VideoList({
                 className="w-full border rounded-lg p-2 text-sm bg-white"
                 placeholder="Title"
               />
+              <input
+                value={editDraft.url}
+                onChange={e => setEditDraft({...editDraft, url: e.target.value})}
+                className="w-full border rounded-lg p-2 text-sm bg-white"
+                placeholder="URL"
+              />
+              <input 
+                value={editDraft.duration ?? ''}
+                onChange={e => setEditDraft({...editDraft, duration: e.target.value})}
+                className="w-full border rounded-lg p-2 text-sm bg-white"
+                placeholder="Duration"
+              />
               {/* tags */}
               <input 
                 value={tagsInput}
@@ -102,6 +118,7 @@ export function VideoList({
               {/* repeatFlag */}
               <div className="flex gap-2 flex-wrap">
                 {([
+                  {value: "havent-done", label: "Haven't done"},
                   { value: "do-again", label: "Do again"},
                   { value: "neutral", label: "It was ok"},
                   { value: "dont-do-again", label: "Never again"},

@@ -41,6 +41,14 @@ export function VideoForm({
         }
         className="border p-2 rounded bg-gray-100"
       />  
+
+      <input
+        type="text"
+        placeholder="Duration"
+        value={value.duration ?? ''}
+        onChange={e => onChange({ ...value, duration: e.target.value })}
+        className="border p-2 rounded"
+      />
       
       <fieldset>
         <legend>Body area</legend>
@@ -70,6 +78,7 @@ export function VideoForm({
         <div className="space-y-2">
           {(
             [
+              {value: "havent-done", label: "Haven't done"},
               { value: "do-again", label: "Do again"},
               { value: "neutral", label: "It was ok"},
               { value: "dont-do-again", label: "Never again"},

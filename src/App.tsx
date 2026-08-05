@@ -256,6 +256,7 @@ function App() {
     const newVideo: VideoWorkout = {
       id: crypto.randomUUID(),
       title: input.title,
+      duration: input.duration,
       url: input.url,
       thumbnailUrl: input.thumbnailUrl,
       tags: input.tags,
@@ -278,6 +279,8 @@ function App() {
       ...defaultVideoForm,
       area: prev.area,
     }))
+
+    setVideoTab('list')
   }
 
   // for fetching metadata
@@ -288,7 +291,7 @@ function App() {
       "https://www.youtube.com/oembed?format=json&url=" +
       encodeURIComponent(url)
 
-    const res = await authFetch(endpoint)
+    const res = await fetch(endpoint)
 
     if (!res.ok) {
       throw new Error("Failed to fetch YouTube metadata")

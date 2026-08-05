@@ -72,12 +72,13 @@ export type VideoTab = "add" | "list" | "search" | "edit";
 
 export type DraftVideoWorkout = {
   title: string;
+  duration?: string;
   url: string;
   thumbnailUrl?: string;
   tags: string[];
   note?: string;
   area: "upper" | "lower" | "core"| "full";
-  repeatFlag: "do-again" | "neutral" | "dont-do-again";
+  repeatFlag: "havent-done" | "do-again" | "neutral" | "dont-do-again";
 }
 
 export type SleepEntry = {

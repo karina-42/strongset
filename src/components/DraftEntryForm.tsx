@@ -248,7 +248,7 @@ export function DraftEntryForm({
       {/* body area */}
       <fieldset className="border rounded-lg p-3">
         <legend className="text-sm font-medium text-gray-700 px-2">Body area</legend>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-3">
           {(["upper", "lower", "core", "full", "kickboxing"] as const).map(area => (
             <label key={area} className="flex items-center gap-2">
               <input

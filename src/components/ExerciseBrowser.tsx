@@ -27,6 +27,7 @@ export function ExerciseBrowser({
 }:  ExerciseBrowserProps) {
   const [filter, setFilter] = useState<Filter>("all")
   const [equipmentFilter, setEquipmentFilter] = useState<Equipment | "all">("all")
+  const [showList, setShowList] = useState(false)
 
   const getButtonClass = (buttonFilter: Filter) => {
     const isActive = filter === buttonFilter
@@ -43,6 +44,16 @@ export function ExerciseBrowser({
     return true
   }).sort((a,b) => a.name.localeCompare(b.name))
 
+  function handleFilterClick(newFilter: Filter) {
+    if (filter === newFilter && showList) {
+      setShowList(false)
+      setFilter("all")
+    } else {
+      setFilter(newFilter)
+      setShowList(true)
+    }
+  }
+
   return (
     <div className="bg-gray-100 rounded-xl p-4 shadow-sm space-y-4" id="exercise-browser">
       <div className="flex justify-between items-center">
@@ -57,15 +68,15 @@ export function ExerciseBrowser({
       
       {/* Buttons to filter exercises */}
       <div className="flex gap-2 flex-wrap">
-        <button type='button' name='all' className={getButtonClass("all")} onClick={() => setFilter("all")}>All</button>
-        <button type='button' name='upper' className={getButtonClass("upper")} onClick={() => setFilter("upper")}>Upper</button>
-        <button type='button' name='lower' className={getButtonClass("lower")} onClick={() => setFilter("lower")}>Lower</button>
-        <button type='button' name='core' className={getButtonClass("core")} onClick={() => setFilter("core")}>Core</button>
-        <button type='button' name='full' className={getButtonClass("full")} onClick={() => setFilter("full")}>Full</button>
-        <button type='button' name='kickboxing' className={getButtonClass("kickboxing")} onClick={() => setFilter("kickboxing")}>Kickboxing</button>
+        <button type='button' name='all' className={getButtonClass("all")} onClick={() => { setFilter("all"); setShowList(true); handleFilterClick("all") }}>All</button>
+        <button type='button' name='upper' className={getButtonClass("upper")} onClick={() => { setFilter("upper"); setShowList(true); handleFilterClick("upper") }}>Upper</button>
+        <button type='button' name='lower' className={getButtonClass("lower")} onClick={() => {setFilter("lower"); setShowList(true); handleFilterClick("lower") }}>Lower</button>
+        <button type='button' name='core' className={getButtonClass("core")} onClick={() => { setFilter("core"); setShowList(true); handleFilterClick("core") }}>Core</button>
+        <button type='button' name='full' className={getButtonClass("full")} onClick={() => {setFilter("full"); setShowList(true); handleFilterClick("full") }}>Full</button>
+        <button type='button' name='kickboxing' className={getButtonClass("kickboxing")} onClick={() => {setFilter("kickboxing"); setShowList(true); handleFilterClick("kickboxing") }}>Kickboxing</button>
       </div>
 
-      {filter !== "all" && (
+      {showList && filter !== "kickboxing" && (
       <div className="flex gap-2 flex-wrap">
         {(["all", "balance ball", "band", "barbell", "bodyweight", "cable", "dumbbell", "kettlebell", "machine", "smith machine"] as const).map(eq => (
           <button
@@ -80,13 +91,15 @@ export function ExerciseBrowser({
       )}
 
       {/* Display  list of exercises */}
-      <ExerciseList
-      exercises={filteredExercises}
-      workoutHistory={workoutHistory}
-      onSelectExercise={onSelectExercise}
-      onEditExercise={onEditExercise}
-      onDeleteExercise={onDeleteExercise}
-      />
+      {showList && (
+        <ExerciseList
+          exercises={filteredExercises}
+          workoutHistory={workoutHistory}
+          onSelectExercise={onSelectExercise}
+          onEditExercise={onEditExercise}
+          onDeleteExercise={onDeleteExercise}
+        />
+      )}
     </div>
   )
 }

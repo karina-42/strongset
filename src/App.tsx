@@ -303,7 +303,7 @@ function App() {
       title: data.title,
       thumbnailUrl: data.thumbnail_url,
     }
-  }, [authFetch])
+  }, [])
 
   async function finishWorkout() {
     if (todayEntries.length === 0) return

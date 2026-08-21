@@ -1,10 +1,11 @@
 import { useState } from "react";
-import type { DraftEntryInput } from "../types"
+import type { DraftEntryInput, Exercise } from "../types"
 
 type DraftEntryFormProps = {
   value: DraftEntryInput;
   lastDoneDate: Date | null;
   isEditing: boolean;
+  exercises: Exercise[];
   onClear: () => void;
   onChange: (value: DraftEntryInput) => void;
   onSubmit: () => void;
@@ -14,11 +15,15 @@ export function DraftEntryForm({
   value,
   lastDoneDate,
   isEditing,
+  exercises,
   onClear,
   onChange,
   onSubmit,
 }: DraftEntryFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const isNewExercise = !exercises.find(
+    e => e.name.toLowerCase() === value.exerciseName.toLowerCase()
+  )
 
   return (
     <div className="bg-gray-100 rounded-xl p-4 shadow-sm space-y-4" id="exercise-form">
@@ -64,6 +69,61 @@ export function DraftEntryForm({
           }
         />
       </div>
+
+      {/* body area & equipment*/}      
+      {isNewExercise && (
+        <>
+          <fieldset className="border rounded-lg p-3">
+            <legend className="text-sm font-medium text-gray-700 px-2">Body area</legend>
+            <div className="flex flex-wrap gap-3">
+              {(["upper", "lower", "core", "full", "kickboxing"] as const).map(area => (
+                <label key={area} className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="area"
+                    value={area}
+                    checked={value.area === area}
+                    onChange={() => 
+                      onChange({
+                        ...value,
+                        area,
+                      })
+                    }
+                  />
+                  <span className="capitalize">{area}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          
+          {value.area !== "kickboxing" && (
+          <fieldset className="border rounded-lg p-3">
+            <legend className="text-sm font-medium text-gray-700 px-2">Equipment used</legend>
+            <div className="flex flex-wrap gap-2">
+              {(["balance ball", "band", "barbell", "bodyweight", "cable", "dumbbell", "kettlebell", "machine", "smith machine"] as const).map(equipment => (
+                <label key={equipment} className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="equipment"
+                    value={equipment}
+                    checked={value.equipment === equipment}
+                    onChange={() => 
+                      onChange({
+                        ...value,
+                        equipment,
+                        isJustBar: false,
+                      })
+                    }
+                  />
+                  <span className="capitalize">{equipment}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          )}               
+        </>
+      )}
+
       {/* weight in kg and number of weights, reps and sets*/}
       {value.area !== "kickboxing" && (
         <div className="space-y-4">
@@ -227,6 +287,22 @@ export function DraftEntryForm({
         </div>
       )}
 
+      {/* Effort rating */}
+      {value.area !== "kickboxing" && value.area !== "mittWork" && (
+        <div>
+          <label className="flec gap-3 mt-1">How'd it feel?</label>
+            {(["😫", "🥲", "😐", "🤔", "😝"] as const).map(emoji => (
+              <button
+                key={emoji}
+                type="button"
+                onClick={() => onChange({ ...value, effort: emoji })}
+                className={`text-2xl p-1 rounded ${value.effort === emoji ? 'bg-purple-100 ring-2 ring-purple-400' : ''}`}
+              >
+                {emoji}
+              </button>
+            ))}
+        </div>
+      )}
 
       {/* Note */}
       <div>
@@ -244,57 +320,6 @@ export function DraftEntryForm({
           }
         />
       </div>
-      
-      {/* body area */}
-      <fieldset className="border rounded-lg p-3">
-        <legend className="text-sm font-medium text-gray-700 px-2">Body area</legend>
-        <div className="flex flex-wrap gap-3">
-          {(["upper", "lower", "core", "full", "kickboxing"] as const).map(area => (
-            <label key={area} className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="area"
-                value={area}
-                checked={value.area === area}
-                onChange={() => 
-                  onChange({
-                    ...value,
-                    area,
-                  })
-                }
-              />
-              <span className="capitalize">{area}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      
-      {/* equipment */}
-      {value.area !== "kickboxing" && (
-      <fieldset className="border rounded-lg p-3">
-        <legend className="text-sm font-medium text-gray-700 px-2">Equipment used</legend>
-        <div className="flex flex-wrap gap-2">
-          {(["balance ball", "band", "barbell", "bodyweight", "cable", "dumbbell", "kettlebell", "machine", "smith machine"] as const).map(equipment => (
-            <label key={equipment} className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="equipment"
-                value={equipment}
-                checked={value.equipment === equipment}
-                onChange={() => 
-                  onChange({
-                    ...value,
-                    equipment,
-                    isJustBar: false,
-                  })
-                }
-              />
-              <span className="capitalize">{equipment}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      )}
         
       {/* Click and save the draft into today's entries */}
       <button 

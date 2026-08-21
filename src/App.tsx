@@ -836,6 +836,7 @@ async function handleDeleteCalendarNote(id: string) {
             <DraftEntryForm
               value={draftInput}
               lastDoneDate={lastDoneDate}
+              exercises={exercises}
               isEditing = {editingEntryId !== null}
               onClear={handleClearForm}
               onChange={setDraftInput}

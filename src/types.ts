@@ -40,6 +40,7 @@ export interface WorkoutEntry {
   bandColor?: string;
   cablePlate?: number;
   isJustBar?: boolean;
+  effort?: string;
 }
 
 // Display type to display the name of the exercise in 
@@ -62,6 +63,7 @@ export type DraftEntryInput = {
   bandColor?: string;
   cablePlate?: number;
   isJustBar?: boolean;
+  effort?: string;
 }
 
 export type Equipment = "barbell" | "dumbbell" | "cable" | "smith machine" | "machine" | "bodyweight" | "band" | "kettlebell" | "balance ball";
